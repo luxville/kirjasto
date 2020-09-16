@@ -5,7 +5,7 @@ Tavoitteena on toteuttaa virtuaalinen kirjasto, josta asiakas voi lainata tai va
 Ohjelman kehittyessä kirjautumaton käyttäjä voi katsella kirjastossa olevien lainattavien asioiden tietoja, joita voi rajata tekijän, julkaisuvuoden tai tyypin perusteella. Kirjautumattomana voi myös rekisteröityä ja hankkia näin itselleen lainausoikeuden kirjaston aineistoon. Kirjautuneena aineistoa voi lisäksi lainata ja varata sekä palauttaa ja perua varauksia. Myös omia tietoja voi muokata ja asiakkuuden poistaminenkin on mahdollista. Pääkäyttäjänä eli kirjaston edustajana kirjastoon voidaan luoda uutta aineistoa, vanhaa voidaan poistaa ja olemassaolevasta aineistosta nähdä, kenellä se on lainassa. Myös pääkäyttäjä voi lisätä ja poistaa asiakkuuksia.
 
 ## Toiminnallisuuksia
-Toistaiseksi mitään toimintoja ei tosiasiallisesti ole piilotettu kirjautumisen taakse, eikä kaikkea ole myöskään toteutettu.
+
 * Kirjautumaton käyttäjä voi
     * tarkastella yleistietoja kirjaston aineistosta
     * katsella tekijöistä järjestelmään kirjattuja tietoja
@@ -22,6 +22,8 @@ Toistaiseksi mitään toimintoja ei tosiasiallisesti ole piilotettu kirjautumise
     * muokata järjestelmässä olevia asiakkaiden, sisällöntuottajien ja lainattavien tuotteiden tietoja
     * poistaa järjestelmästä lainattavia tuotteita, sisällöntuottajia tai asiakkuuksia
     * nähdä lainassa olevan tuotteen tietojen yhteydessä myös senhetkisen lainaajan tiedot
+
+Toistaiseksi mitään toimintoja ei tosiasiallisesti ole piilotettu kirjautumisen taakse, eikä kaikkea ole myöskään toteutettu. Käytännössä kirjautuminen kuitenkin vaaditaan, mutta kirjautumistietoja ei talleteta tietokantaan. Aineistoa voi lisätä vain olemassaolevien sisällöntuottajien kautta, ja lomakkeet toimivat oikein vain oletusarvoisesti oikeilla syötteillä. Jokaiseen kenttään pitää myös syöttää jokin tieto.
 
 ## Alustava tietokantarakenne
 
