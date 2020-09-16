@@ -1,0 +1,35 @@
+<p><b>{{ work[1] }}</b></p>
+<p>Tekijä: <a href="/author/{{ author[0] }}"">{{ author[2] }} {{ author[1] }}</a></p>    
+<p>Julkaisuvuosi: {{ work[3] }}</p>
+<p>Määrä: {{ work[4] }}</p>
+<p>Tyyppi: {{ type[0] }}</p>
+<p>Ikäraja: {{ work[6] }}</p>
+<hr>
+<!--
+    <p>Tuotanto:<br>
+    {% for work in works %}
+<a href="/{{ work[0] }}">{{ work[1] }}</a><br>
+    {% endfor %}
+    <hr>
+</p>
+<p>Lisää uusi teos:<br>
+    Tekijä:<br>
+    {{ author[2] }} {{ author[2] }}
+<form action="/add_new_material" method="POST">
+    <p>Teoksen nimi:<br>
+    <input type="text" name="name"></p>
+    <input type="hidden" name="author_id" value="{{ author[0] }}">
+    <p>Julkaisuvuosi:<br>
+    <input type="number" name="issued"></p>
+    <p>Määrä:<br>
+    <input type="number" name="amount"></p>
+    <p>Tyyppi:<br>
+        {% for choice in types %}
+        <input type="radio" name="type_id" value="{{ choice[0] }}">{{ choice[1] }}<br>
+        {% endfor %}
+    </p>
+    <p>Ikäraja:<br>
+    <input type="number" name="age"></p>
+<input type="submit" value="Lisää teos">
+</form> -->
+<a href="/">Takaisin etusivulle</a>

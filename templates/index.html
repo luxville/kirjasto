@@ -1,0 +1,40 @@
+<title>Kirjasto</title>
+<h1>Etusivu</h1>
+<b>Tervetuloa</b> <i>sovellukseen</i>!
+<!-- <p>{{ message }}</p>
+<ul>
+    {% for item in items %}
+    <li>{{ item }}</li>
+    {% endfor %}
+</ul> -->
+{% if session.username %}
+<p>Olet kirjautunut nimellä {{ session.username }}</p>
+<a href="/logout">Kirjaudu ulos</a>
+
+<p>Kirjastossa on tällä hetkellä lainattavia tuotteita {{ count_a }} 
+    sisällöntuottajalta. Voit muokata kirjailijan tai muun aineiston 
+    tuottajan tietoja tai lisätä niille lainattavia teoksia nimessä 
+    olevan linkin kautta.</p>
+<hr>
+{% for author in authors %}
+<a href="/author/{{ author[0] }}">{{ author[1] }}, {{ author[2] }}</a><br>
+{% endfor %}
+<hr>
+<a href="/new_author">Lisää sisällöntuottaja</a>
+<hr>
+<p>Kirjaston materiaali koostuu seuraavantyyppisistä lainattavista
+    tuotteista:</p>
+{% for type in types %}
+<li>
+    {{ type[1] }}: {{ type[2] }} kpl
+</li>
+{% endfor %}
+{% else %}
+<form action="/login" method="POST">
+<p>Käyttäjätunnus:<br>
+<input type="text" name="username"></p>
+<p>Salasana:<br>
+<input type="password" name="password"></p>
+<input type="submit" value="Kirjaudu">
+</form>
+{% endif %}
