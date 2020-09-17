@@ -1,0 +1,47 @@
+<p>Voit rekisteröityä kirjaston käyttäjäksi antamalla seuraavat pyydetyt tiedot.</p>
+<form action="/register" method="POST" onsubmit="return check(this)">
+    <p>Nimi:<br>
+    <input type="text" name="name"></p>
+    <p>Käyttäjätunnus:<br>
+    <input type="text" name="username"></p>
+    <p>Salasana:<br>
+    <input type="password" name="password1"></p>
+    <p>Toista antamasi salasana:<br>
+    <input type="password" name="password2"></p>
+    <p>Ikä:<br>
+    <input type="number" name="age"></p>
+    <input type="submit" value="Rekisteröidy">
+    </form>
+    <hr>
+    <a href="/">Takaisin etusivulle</a>
+
+    <script>
+        function check(form) {
+            name = form.name.value
+            username = form.username.value
+            password1 = form.password1.value
+            password2 = form.password2.value
+            age = form.age.value
+            if (name == '') {
+                alert("Rekisteröityminen ei onnistu ilman nimeä.");
+                return false;
+            }
+            if (username == '') {
+                alert("Rekisteröityminen ei onnistu ilman käyttäjätunnusta.");
+                return false;
+            }
+            if (password1 == '') {
+                alert("Rekisteröityminen ei onnistu ilman salasanaa.");
+                return false;
+            }
+            if (password2 == '') {
+                alert("Rekisteröityminen ei onnistu ilman salasanan vahvistamista.");
+                return false;
+            }
+            if (password1 != password2) {
+                alert("Salasanat eivät täsmää.")
+                return false;
+            }
+            return true;
+        }
+    </script>

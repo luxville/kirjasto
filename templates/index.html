@@ -1,12 +1,4 @@
 <title>Kirjasto</title>
-<h1>Etusivu</h1>
-<b>Tervetuloa</b> <i>sovellukseen</i>!
-<!-- <p>{{ message }}</p>
-<ul>
-    {% for item in items %}
-    <li>{{ item }}</li>
-    {% endfor %}
-</ul> -->
 {% if session.username %}
 <p>Olet kirjautunut nimellä {{ session.username }}</p>
 <a href="/logout">Kirjaudu ulos</a>
@@ -37,4 +29,5 @@
 <input type="password" name="password"></p>
 <input type="submit" value="Kirjaudu">
 </form>
+<p>Jos sinulla ei vielä ole tunnuksia, voit rekisteröityä <a href="/new_account">täältä</a>.</p>
 {% endif %}

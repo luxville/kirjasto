@@ -100,3 +100,20 @@ def login():
 def logout():
     del session["username"]
     return redirect("/")
+
+@app.route("/new_account")
+def new_account():
+    return render_template("register.html")
+
+@app.route("/register", methods=["POST"])
+def register():
+    name = request.form["name"]
+    username = request.form["username"]
+    password = request.form["password1"]
+    hash_value = generate_password_hash(password)
+    age = request.form["age"]
+    sql = "INSERT INTO accounts (name, username, password, age) VALUES " \
+        "(:name, :username, :password, :age)"
+    db.session.execute(sql, {"name":name, "username":username, "password":hash_value, "age":age})
+    db.session.commit()
+    return redirect("/")
