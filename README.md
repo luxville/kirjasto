@@ -11,21 +11,21 @@ Ohjelman kehittyessä kirjautumaton käyttäjä voi katsella kirjastossa olevien
 * Kirjautumaton käyttäjä voi
     * tarkastella yleistietoja kirjaston aineistosta
     * katsella tekijöistä järjestelmään kirjattuja tietoja
-    * rekisteröityä kirjaston asiakkaaksi (*ei mahdollista asiakkaaksi kirjautuneena*)
-    * kirjautua sisään järjestelmään (** Toistaiseksi ainoa käytössä oleva toiminnallisuus **)
+    * rekisteröityä kirjaston asiakkaaksi (**käytössä**)
+    * kirjautua sisään järjestelmään (**käytössä**)
 * Asiakkaaksi kirjautuneena voi lisäksi
     * lainata ja palauttaa aineistoa
     * varata aineistoa, jos kaikki kappaleet ovat lainassa, tai perua varauksia
-    * muokata omia tietoja
-    * poistaa omat tiedot
+    * muokata omia tietoja (**käytössä**)
+    * poistaa omat tiedot (**käytössä**)
 * Pääkäyttäjänä voi 
-    * lisätä järjestelmään uusia sisällöntuottajia
-    * lisätä sisällöntuottajille uusia lainattavia tuotteita
+    * lisätä järjestelmään uusia sisällöntuottajia (**käytössä**)
+    * lisätä sisällöntuottajille uusia lainattavia tuotteita (**käytössä**)
     * muokata järjestelmässä olevia asiakkaiden, sisällöntuottajien ja lainattavien tuotteiden tietoja
     * poistaa järjestelmästä lainattavia tuotteita, sisällöntuottajia tai asiakkuuksia
     * nähdä lainassa olevan tuotteen tietojen yhteydessä myös senhetkisen lainaajan tiedot
 
-Toistaiseksi mitään toimintoja ei tosiasiallisesti ole piilotettu kirjautumisen taakse, eikä kaikkea ole myöskään toteutettu. Käytännössä kirjautuminen kuitenkin vaaditaan, mutta kirjautumistietoja ei talleteta tietokantaan. Rekisteröityminen ja tietojen tallentuminen tietokantaan on kuitenkin mahdollista. Aineistoa voi lisätä vain olemassaolevien sisällöntuottajien kautta, ja lomakkeet toimivat oikein vain oletusarvoisesti oikeilla syötteillä. Jokaiseen kenttään pitää myös syöttää jokin tieto.
+Toistaiseksi kirjautuminen vaaditaan, jotta muihin toimintoihin pääsee tutustumaan. Rekisteröityminen ja tietojen tallentuminen tietokantaan toimii. Aineistoa voi lisätä vain olemassaolevien sisällöntuottajien kautta, ja lomakkeet toimivat oikein lähinnä oletusarvoisesti oikeilla syötteillä. Rekisteröitymisen yhteydessä käyttäjän tiedot tarkistetaan ikää lukuunottamatta. Jokaiseen kenttään pitää myös syöttää oikeantyyppinen tieto, jotta ohjelma toimisi oikein. Mitään tietoturvatarkistuksia ei ole vielä toteutettu, joten käyttäjätietojen muokkaus ja poistaminen onnistuu toistenkin käyttäjien osalta.
 
 ## Alustava tietokantarakenne
 
