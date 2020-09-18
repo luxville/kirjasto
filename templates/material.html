@@ -1,3 +1,9 @@
+{% if session.username %}
+<p>Olet kirjautunut nimellä {{ session.username }}</p>
+<a href="/logout">Kirjaudu ulos</a>
+<hr>
+{% endif %}
+
 <p><b>{{ work[1] }}</b></p>
 <p>Tekijä: <a href="/author/{{ author[0] }}"">{{ author[2] }} {{ author[1] }}</a></p>    
 <p>Julkaisuvuosi: {{ work[3] }}</p>

@@ -10,6 +10,19 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.secret_key = getenv("SECRET_KEY")
 db = SQLAlchemy(app)
 
+class Accounts(db.Model):
+    id = db.Column(db.Integer, unique=True, nullable=False, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    username = db.Column(db.String(40), unique=True, nullable=False)
+    password = db.Column(db.String(256), nullable=False)
+    age = db.Column(db.Integer)
+
+    def __init__(self, name, username, password, age):
+        self.name = name
+        self.username = username
+        self.password = password
+        self.age = age
+
 @app.route("/")
 def index():
     result = db.session.execute("SELECT COUNT (*) FROM authors")
@@ -92,8 +105,19 @@ def material(id):
 def login():
     username = request.form["username"]
     password = request.form["password"]
-    # TODO
-    session["username"] = username
+    sql = "SELECT id, password, name FROM accounts WHERE username=:username"
+    result = db.session.execute(sql, {"username":username})
+    user = result.fetchone()
+    if user == None:
+        redirect("/")
+    else:
+        hash_value = user[1]
+        if check_password_hash(hash_value,password):
+            session["username"] = user[2]
+            session["user_id"] = user[0]
+            redirect("/")
+        else:
+            redirect("/")
     return redirect("/")
 
 @app.route("/logout")
@@ -115,5 +139,33 @@ def register():
     sql = "INSERT INTO accounts (name, username, password, age) VALUES " \
         "(:name, :username, :password, :age)"
     db.session.execute(sql, {"name":name, "username":username, "password":hash_value, "age":age})
+    db.session.commit()
+    return redirect("/")
+
+@app.route("/account/<int:id>")
+def account(id):
+    sql = "SELECT id, name, username, password, age FROM accounts WHERE id=:id"
+    result = db.session.execute(sql, {"id":id})
+    account = result.fetchone()
+    return render_template("account.html", account=account)
+
+@app.route("/update_account", methods=["POST"])
+def update_account():
+    id = request.form["id"]
+    new_name = request.form["name"]
+    new_username = request.form["username"]
+    new_age = request.form["age"]
+    account = Accounts.query.get(id)
+    account.name = new_name
+    account.username = new_username
+    account.age = new_age
+    db.session.commit() 
+    return redirect("/")
+
+@app.route("/delete_account", methods=["POST"])
+def delete():
+    id = request.form["id"]
+    account = Accounts.query.get(id)
+    db.session.delete(account)
     db.session.commit()
     return redirect("/")

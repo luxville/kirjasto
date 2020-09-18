@@ -1,7 +1,9 @@
 <title>Kirjasto</title>
 {% if session.username %}
 <p>Olet kirjautunut nimellä {{ session.username }}</p>
+<p><a href="/account/{{ session.user_id }}">Oma sivu</a></p>
 <a href="/logout">Kirjaudu ulos</a>
+<hr>
 
 <p>Kirjastossa on tällä hetkellä lainattavia tuotteita {{ count_a }} 
     sisällöntuottajalta. Voit muokata kirjailijan tai muun aineiston 

@@ -1,3 +1,9 @@
+{% if session.username %}
+<p>Olet kirjautunut nimellä {{ session.username }}</p>
+<a href="/logout">Kirjaudu ulos</a>
+{% endif %}
+<hr>
+
 <form action="/add_new_author" method="POST">
 <p>Etunimi:<br>
 <input type="text" name="first_name"></p>

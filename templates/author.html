@@ -1,11 +1,16 @@
+{% if session.username %}
+<p>Olet kirjautunut nimellä {{ session.username }}</p>
+<a href="/logout">Kirjaudu ulos</a>
+<hr>
+{% endif %}
+
 <p><b>{{ author[1] }}, {{ author[2] }}</b> 
     ({{ author[3] }}-{{ author[4]}}) {{ author[5] }}</p>
     <hr>
     <p>Tuotanto:<br>
     {% for work in works %}
-<a href="/material/{{ work[0] }}">{{ work[1] }}</a>
-<!-- <a href="/author/{{ author[0] }}">{{ author[1] }}, {{ author[2] }}</a><br> -->
-<br>
+    <a href="/material/{{ work[0] }}">{{ work[1] }}</a>
+    <br>
     {% endfor %}
     <hr>
 </p>
