@@ -1,6 +1,6 @@
 from db import db
 from flask import session
-import authors, material, types
+import authors, librarymaterial, materialtypes
 from werkzeug.security import check_password_hash, generate_password_hash
 
 class Accounts(db.Model):

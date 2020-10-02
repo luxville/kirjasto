@@ -1,5 +1,5 @@
 from db import db
-import accounts, authors, types
+import accounts, authors, materialtypes
 
 class Librarymaterial(db.Model):
     id = db.Column(db.Integer, unique=True, nullable=False, primary_key=True)

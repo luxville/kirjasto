@@ -1,6 +1,6 @@
 from db import db
 from flask import session
-import accounts, authors, material
+import accounts, authors, librarymaterial
 
 def get_types_count():
     sql = "SELECT M.id, M.name, COUNT(L.type_id) FROM materialtypes M JOIN " \
