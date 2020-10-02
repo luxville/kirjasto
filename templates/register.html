@@ -1,19 +1,22 @@
-<p>Voit rekisteröityä kirjaston käyttäjäksi antamalla seuraavat pyydetyt tiedot.</p>
-<form action="/register" method="POST" onsubmit="return check(this)">
-    <p>Nimi:<br>
-    <input type="text" name="name"></p>
-    <p>Käyttäjätunnus:<br>
-    <input type="text" name="username"></p>
-    <p>Salasana:<br>
-    <input type="password" name="password1"></p>
-    <p>Toista antamasi salasana:<br>
-    <input type="password" name="password2"></p>
-    <p>Ikä:<br>
-    <input type="number" name="age"></p>
-    <input type="submit" value="Rekisteröidy">
-    </form>
-    <hr>
-    <a href="/">Takaisin etusivulle</a>
+{% extends "layout.html" %}
+    {% block body %}
+
+        <p>Voit rekisteröityä kirjaston käyttäjäksi antamalla seuraavat pyydetyt tiedot.</p>
+        <form action="/register" method="POST" onsubmit="return check(this)">
+            <p>Nimi:<br>
+            <input type="text" name="name"></p>
+            <p>Käyttäjätunnus:<br>
+            <input type="text" name="username"></p>
+            <p>Salasana:<br>
+            <input type="password" name="password1"></p>
+            <p>Toista antamasi salasana:<br>
+            <input type="password" name="password2"></p>
+            <p>Ikä:<br>
+            <input type="number" name="age"></p>
+            <input type="submit" value="Rekisteröidy">
+        </form>
+        <hr>
+    {% endblock %}
 
     <script>
         function check(form) {

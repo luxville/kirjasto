@@ -1,31 +1,28 @@
-{% if session.username %}
-<p>Olet kirjautunut nimellä {{ session.username }}</p>
-<a href="/logout">Kirjaudu ulos</a>
-<hr>
+{% extends "layout.html" %}
+    {% block body %}
+        {% if session.username %}
 
-</p>
-<form action="/update_account" method="POST">
-    <input type="hidden" name="id" value="{{ account[0] }}">
-    <p>Nimi:<br>
-        {{ account[1] }}<br>
-        <input type="text" name="name" value="{{ account[1] }}"></p>
-    <p>Käyttäjätunnus:<br>
-        {{ account[2] }}<br>
-        <input type="text" name="username" value="{{ account[2] }}"></p>
-    <!--<p>Salasana:<br>
-        <input type="password" name="password" value="{{ account[3] }}"></p> -->
-    <p>Ikä:<br>
-        {{ account[4] }}<br>
-        <input type="number" name="age" value="{{ account[4] }}"></p>
-    </p>
-<input type="submit" value="Päivitä tiedot">
-</form>
-<hr>
-<form action="/delete_account", method="POST">
-    <input type="hidden" name="id" value="{{ account[0] }}">
-    <input type="submit" value="Poista käyttäjätunnus">
-</form>
-<hr>
-<a href="/">Takaisin etusivulle</a>
+            <form action="/update_account" method="POST">
+                <input type="hidden" name="id" value="{{ account[0] }}">
+                <p>Nimi:<br>
+                {{ account[1] }}<br>
+                <input type="text" name="name" value="{{ account[1] }}"></p>
+                <p>Käyttäjätunnus:<br>
+                {{ account[2] }}<br>
+                <input type="text" name="username" value="{{ account[2] }}"></p>
+                <!--<p>Salasana:<br>
+                <input type="password" name="password" value="{{ account[3] }}"></p> -->
+                <p>Ikä:<br>
+                {{ account[4] }}<br>
+                <input type="number" name="age" value="{{ account[4] }}"></p>
+                </p>
+                <input type="submit" value="Päivitä tiedot">
+            </form>
+            <hr>
+            <form action="/delete_account", method="POST">
+                <input type="hidden" name="id" value="{{ account[0] }}">
+                <input type="submit" value="Poista käyttäjätunnus">
+            </form>
 
-{% endif %}
+        {% endif %}
+    {% endblock %}

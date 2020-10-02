@@ -1,8 +1,9 @@
-<form action="/login" method="POST">
-Kuka olet?
-<input type="text" name="name">
-<br>
-<input type="submit" value="Lähetä">
-</form>
-<hr>
-<a href="/">Takaisin</a>
+{% extends "layout.html" %}
+    {% block body %}
+        <form action="/login" method="POST">
+            Kuka olet?
+            <input type="text" name="name">
+            <br>
+            <input type="submit" value="Lähetä">
+        </form>
+    {% endblock %}

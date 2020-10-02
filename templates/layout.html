@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8"
+        <title>Kirjasto</title>
+    </head>
+
+    <body>
+        {% if session.username %}
+            <p>Olet kirjautunut nimellä {{ session.username }}</p>
+            <p><a href="/account/{{ session.user_id }}">Oma sivu</a></p>
+            <a href="/logout">Kirjaudu ulos</a>
+            <hr>
+        {% endif %}
+
+        {% block body %}
+        <p>
+            Sisältö
+        </p>
+        {% endblock %}
+
+        <hr>
+        <a href="/">Takaisin etusivulle</a>
+    </body>
+</html>
