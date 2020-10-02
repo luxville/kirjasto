@@ -1,10 +1,24 @@
 from flask import Flask
+from os import getenv
+
+app = Flask(__name__)
+app.secret_key = getenv("SECRET_KEY")
+
+import routes
+
+
+"""
+from flask import Flask
 from flask import redirect, render_template, request, session
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import check_password_hash, generate_password_hash
 from os import getenv
+#from .models import Accounts
+
+
 
 app = Flask(__name__)
+
 app.config["SQLALCHEMY_DATABASE_URI"] = getenv("DATABASE_URL")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.secret_key = getenv("SECRET_KEY")
@@ -25,6 +39,10 @@ class Accounts(db.Model):
 
 @app.route("/")
 def index():
+    sql = "SELECT m.id, m.name, t.name FROM material m JOIN types t ON m.type_id=t.id " \
+        "WHERE m.type_id=t.id ORDER BY m.name"
+    result = db.session.execute(sql)
+    material = result.fetchall()
     result = db.session.execute("SELECT COUNT (*) FROM authors")
     count_a = result.fetchone()[0]
     sql = "SELECT id, surname, first_name FROM authors ORDER BY surname"
@@ -34,11 +52,11 @@ def index():
         "t.id=m.type_id WHERE m.type_id=t.id GROUP BY t.id ORDER BY t.name"
     result = db.session.execute(sql)
     types = result.fetchall()
-    return render_template("index.html", count_a=count_a, authors=authors, types=types)
+    return render_template("index.html", material=material, count_a=count_a, authors=authors, types=types)
 
-@app.route("/result", methods=["POST"])
-def result():
-    return render_template("result.html",name=request.form["name"]) 
+#@app.route("/result", methods=["POST"])
+#def result():
+#    return render_template("result.html",name=request.form["name"]) 
     #request.form kun pyydetään tietoja lomakkeelta
 
 @app.route("/new_author")
@@ -169,3 +187,5 @@ def delete():
     db.session.delete(account)
     db.session.commit()
     return redirect("/")
+
+    """
