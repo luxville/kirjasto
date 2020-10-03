@@ -2,7 +2,7 @@
 
 [Sovellus Herokussa](http://tsoha-kirjasto.herokuapp.com/)
 
-Herokussa sovellusta voi testata käyttäjätunnuksella *test* ja salasanalla *user* niin kauan kunnes joku poistaa kyseisen tunnuksen. Myös oman tunnuksen luominen onnistuu, sillä eri käyttäjätasoja ei ole vielä toteutettu.
+Herokussa sovellusta voi testata käyttäjätunnuksella *testi* ja salasanalla *kayttaja* niin kauan kunnes joku poistaa kyseisen tunnuksen. Näköjään tietojen muokkaamisen jälkeen myös sisäänkirjautuminen muuttuu ongelmalliseksi. Myös oman tunnuksen luominen onnistuu, sillä eri käyttäjätasoja ei ole vielä toteutettu.
 
 Viimeisille viikoille riittää vielä ehkä liiankin paljon tekemättömiä asioita, mutta näillä eväillä homma tässä vaiheessa kuitenkin jatkuu.
 
