@@ -1,11 +1,56 @@
 {% extends "layout.html" %}
     {% block body %}
 
+    <div id="info" style="display:block">
         <p><b>{{ work[1] }}</b></p>
         <p>Tekijä: <a href="/author/{{ author[0] }}"">{{ author[2] }} {{ author[1] }}</a></p>    
         <p>Julkaisuvuosi: {{ work[3] }}</p>
         <p>Määrä: {{ work[4] }}</p>
-        <p>Tyyppi: {{ type[0] }}</p>
+        <p>Tyyppi: {{ type[1] }}</p>
         <p>Ikäraja: {{ work[6] }}</p>
+        <button id="edit" value="Muokkaa tietoja" onclick="
+            document.getElementById('info').style.display='none';
+            document.getElementById('update').style.display='block';
+            document.getElementById('hide').style.display='block'">Muokkaa tietoja</button>
+    </div>
+    <div id="update" style="display:none">
+        <button id="hide" style="display:none" value="Piilota lomake" onclick="
+        document.getElementById('edit').style.display='block';
+        document.getElementById('update').style.display='none';
+        document.getElementById('info').style.display='block'">Piilota lomake</button>
+        <form id="x" action="/update_material" method="POST">
+            <input type="hidden" name="id" value="{{ id }}">
+            <p>Teoksen nimi:<br>
+                <input type="text" name="name" value="{{ work[1] }}"></p>
+            <p>Tekijä:<br>
+                <select name="author_id">
+                    <option value="{{ author[0] }}" selected="{{ author[0] }}">{{ author[1] }}, {{author[2] }}</option>
+                    {% for a in a_list %}
+                        <option value="{{ a[0] }}">{{ a[1] }}, {{ a[2] }}</option> 
+                    {% endfor %}
+                </select>
+            </p>
+            <p>Julkaisuvuosi:<br>
+            <input type="number" name="issued" value="{{ work[3] }}"></p>
+            <p>Määrä:<br>
+            <input type="number" name="amount" value="{{ work[4] }}"></p>
+            <p>Tyyppi:<br>
+                <select name="type_id">
+                    <option value="{{ type[0] }}">{{ type[1] }}</option>
+                    {% for choice in t_list %}
+                        <option value="{{ choice[0] }}>{{ choice[1] }}</option> 
+                    {% endfor %}
+                </select>
+            </p>
+            <p>Ikäraja:<br>
+            <input type="number" name="age" value="{{ work[6] }}"></p>
+            <input type="submit" value="Muokkaa tietoja">
+        </form>
+        <hr>
+        <form action="/delete_material", method="POST">
+            <input type="hidden" name="id" value="{{ work[0] }}">
+            <input type="submit" value="Poista teos järjestelmästä">
+        </form>
         
+    </div>
     {% endblock %}
