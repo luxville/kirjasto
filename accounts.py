@@ -59,14 +59,16 @@ def update(id, new_name, new_username, new_age):
         account.username = new_username
         account.age = new_age
         db.session.commit() 
+        return True
     except:
         return False
 
-def delete(id):
+def delete_account(id):
     try:
         account = Accounts.query.get(id)
         db.session.delete(account)
         db.session.commit()
+        return True
     except:
         return False
 

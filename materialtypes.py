@@ -10,8 +10,8 @@ def get_types_count():
     t_list = result.fetchall()
     return t_list
 
-def get_type_name(id):
-    sql = "SELECT M.name FROM materialtypes M JOIN librarymaterial L ON " \
+def get_type(id):
+    sql = "SELECT M.id, M.name FROM materialtypes M JOIN librarymaterial L ON " \
         "L.type_id=M.id WHERE L.id=:id"
     result = db.session.execute(sql, {"id":id})
     type = result.fetchone()

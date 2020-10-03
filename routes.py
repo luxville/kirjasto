@@ -50,8 +50,10 @@ def add_new_material():
 def material(id):
     work = librarymaterial.get_work(id)
     author = authors.get_author_by_work(id)
-    type = materialtypes.get_type_name(id)
-    return render_template("material.html", id=id, work=work, author=author, type=type)
+    a_list = authors.get_authors()
+    type = materialtypes.get_type(id)
+    t_list = materialtypes.get_types()
+    return render_template("material.html", id=id, work=work, author=author, a_list=a_list, type=type, t_list=t_list)
 
 @app.route("/login", methods=["POST"])
 def login():
@@ -102,10 +104,31 @@ def update_account():
         return render_template("error.html", message="Tietojen päivittäminen ei onnistunut.")
     
 @app.route("/delete_account", methods=["POST"])
-def delete():
+def delete_account():
     id = request.form["id"]
-    if accounts.delete(id):
+    if accounts.delete_account(id):
         return redirect("/")
     else:
         return render_template("error.html", message="Käyttäjätilin poistaminen ei onnistunut.")
+
+@app.route("/update_material", methods=["POST"])
+def update_material():
+    id = request.form["id"]
+    new_name = request.form["name"]
+    new_author_id = request.form["author_id"]
+    new_issued = request.form["issued"]
+    new_amount = request.form["amount"]
+    new_type = request.form["type"]
+    new_age = request.form["age"]
+    if librarymaterial.update_material(id, new_name, new_author_id, new_issued, new_amount, new_type, new_age):
+        return redirect("/")
+    else:
+        return render_template("error.html", message="Tietojen päivittäminen ei onnistunut.")
     
+@app.route("/delete_material", methods=["POST"])
+def delete_material():
+    id = request.form["id"]
+    if librarymaterial.delete_material(id):
+        return redirect("/")
+    else:
+        return render_template("error.html", message="Teoksen poistaminen ei onnistunut.")

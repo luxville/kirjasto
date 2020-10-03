@@ -5,10 +5,10 @@ class Librarymaterial(db.Model):
     id = db.Column(db.Integer, unique=True, nullable=False, primary_key=True)
     name = db.Column(db.String(140), nullable=False)
     author_id = db.Column(db.Integer, nullable=False)
-    issued = db.Column(db.Integer)
-    amount = db.Column(db.Integer)
-    type = db.Column(db.Integer)
-    age = db.Column(db.Integer)
+    issued = db.Column(db.Integer, nullable=False)
+    amount = db.Column(db.Integer, nullable=False)
+    type = db.Column(db.Integer, nullable=False)
+    age = db.Column(db.Integer, nullable=False)
 
     def __init__(self, name, author_id, issued, amount, type, age):
         self.name = name
@@ -46,3 +46,32 @@ def get_works_by_author(id):
     result = db.session.execute(sql, {"id":id})
     works = result.fetchall()
     return works
+
+def update_material(id, name, author_id, issued, amount, type, age):
+    sql = "UPDATE librarymaterial SET name=:name, author_id=:author_id, " \
+        "issued=:issued, amount=:amount, type=:type, age=:age WHERE id=:id"
+    result = db.session.execute(sql,{"name":name, "author_id":author_id, "issued":issued, "amount":amount, "type":type, "age":age, "id":id})
+    db.session.commit()
+    """
+    try:
+        material = Librarymaterial.query.get(id)
+        material.name = new_name
+        material.author_id = new_author_id
+        material.issued = new_issued
+        material.amount = new_amount
+        material.type = new_type
+        material.age = new_age
+        db.session.commit() 
+        return True
+    except:
+        return False
+"""
+
+def delete_material(id):
+    try:
+        material = Librarymaterial.query.get(id)
+        db.session.delete(material)
+        db.session.commit()
+        return True
+    except:
+        return False
