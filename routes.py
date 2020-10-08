@@ -114,13 +114,13 @@ def delete_account():
 @app.route("/update_material", methods=["POST"])
 def update_material():
     id = request.form["id"]
-    new_name = request.form["name"]
-    new_author_id = request.form["author_id"]
-    new_issued = request.form["issued"]
-    new_amount = request.form["amount"]
-    new_type = request.form["type"]
-    new_age = request.form["age"]
-    if librarymaterial.update_material(id, new_name, new_author_id, new_issued, new_amount, new_type, new_age):
+    new_name = request.form["new_name"]
+    new_author_id = request.form["new_author_id"]
+    new_issued = request.form["new_issued"]
+    new_amount = request.form["new_amount"]
+    new_type_id = request.form["new_type_id"]
+    new_age = request.form["new_age"]
+    if librarymaterial.update_material(id, new_name, new_author_id, new_issued, new_amount, new_type_id, new_age):
         return redirect("/")
     else:
         return render_template("error.html", message="Tietojen päivittäminen ei onnistunut.")

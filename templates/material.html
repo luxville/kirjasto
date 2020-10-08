@@ -15,15 +15,15 @@
     </div>
     <div id="update" style="display:none">
         <button id="hide" style="display:none" value="Piilota lomake" onclick="
-        document.getElementById('edit').style.display='block';
-        document.getElementById('update').style.display='none';
-        document.getElementById('info').style.display='block'">Piilota lomake</button>
-        <form id="x" action="/update_material" method="POST">
-            <input type="hidden" name="id" value="{{ id }}">
+            document.getElementById('edit').style.display='block';
+            document.getElementById('update').style.display='none';
+            document.getElementById('info').style.display='block'">Piilota lomake</button>
+        <form action="/update_material" method="POST">
+            <input type="hidden" name="id" value="{{ work[0] }}">
             <p>Teoksen nimi:<br>
-                <input type="text" name="name" value="{{ work[1] }}"></p>
+                <input type="text" name="new_name" value="{{ work[1] }}"></p>
             <p>Tekijä:<br>
-                <select name="author_id">
+                <select name="new_author_id">
                     <option value="{{ author[0] }}" selected="{{ author[0] }}">{{ author[1] }}, {{author[2] }}</option>
                     {% for a in a_list %}
                         <option value="{{ a[0] }}">{{ a[1] }}, {{ a[2] }}</option> 
@@ -31,19 +31,19 @@
                 </select>
             </p>
             <p>Julkaisuvuosi:<br>
-            <input type="number" name="issued" value="{{ work[3] }}"></p>
+                <input type="number" name="new_issued" value="{{ work[3] }}"></p>
             <p>Määrä:<br>
-            <input type="number" name="amount" value="{{ work[4] }}"></p>
+                <input type="number" name="new_amount" value="{{ work[4] }}"></p>
             <p>Tyyppi:<br>
-                <select name="type_id">
-                    <option value="{{ type[0] }}">{{ type[1] }}</option>
+                <select name="new_type_id">
+                    <option value="{{ type[0] }}" selected="{{ type[0] }}">{{ type[1] }}</option>
                     {% for choice in t_list %}
-                        <option value="{{ choice[0] }}>{{ choice[1] }}</option> 
+                        <option value="{{ choice[0] }}">{{ choice[1] }}</option> 
                     {% endfor %}
                 </select>
             </p>
             <p>Ikäraja:<br>
-            <input type="number" name="age" value="{{ work[6] }}"></p>
+                <input type="number" name="new_age" value="{{ work[6] }}"></p>
             <input type="submit" value="Muokkaa tietoja">
         </form>
         <hr>

@@ -7,15 +7,15 @@ class Librarymaterial(db.Model):
     author_id = db.Column(db.Integer, nullable=False)
     issued = db.Column(db.Integer, nullable=False)
     amount = db.Column(db.Integer, nullable=False)
-    type = db.Column(db.Integer, nullable=False)
+    type_id = db.Column(db.Integer, nullable=False)
     age = db.Column(db.Integer, nullable=False)
 
-    def __init__(self, name, author_id, issued, amount, type, age):
+    def __init__(self, name, author_id, issued, amount, type_id, age):
         self.name = name
         self.author_id = author_id
         self.issued = issued
         self.amount = amount
-        self.type = type
+        self.type_id = type_id
         self.age = age
 
 def add_new_material(name, author_id, issued, amount, type_id, age):
@@ -47,25 +47,31 @@ def get_works_by_author(id):
     works = result.fetchall()
     return works
 
-def update_material(id, name, author_id, issued, amount, type, age):
-    sql = "UPDATE librarymaterial SET name=:name, author_id=:author_id, " \
-        "issued=:issued, amount=:amount, type=:type, age=:age WHERE id=:id"
-    result = db.session.execute(sql,{"name":name, "author_id":author_id, "issued":issued, "amount":amount, "type":type, "age":age, "id":id})
-    db.session.commit()
+def update_material(id, new_name, new_author_id, new_issued, new_amount, new_type_id, new_age):
     """
     try:
+        sql = "UPDATE librarymaterial SET name=:name, author_id=:author_id, " \
+            "issued=:issued, amount=:amount, type=:type, age=:age WHERE id=:id"
+        result = db.session.execute(sql,{"name":name, "author_id":author_id, "issued":issued, "amount":amount, "type":type, "age":age, "id":id})
+        db.session.commit()
+        return True
+    except:
+        return False
+    """
+    print("hip")
+    try:
+        print("hep")
         material = Librarymaterial.query.get(id)
         material.name = new_name
         material.author_id = new_author_id
         material.issued = new_issued
         material.amount = new_amount
-        material.type = new_type
+        material.type_id = new_type_id
         material.age = new_age
         db.session.commit() 
         return True
     except:
         return False
-"""
 
 def delete_material(id):
     try:
