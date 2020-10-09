@@ -1,28 +1,50 @@
 {% extends "layout.html" %}
     {% block body %}
         {% if session.username %}
-
-            <form action="/update_account" method="POST">
-                <input type="hidden" name="id" value="{{ account[0] }}">
+            <div id="info" style="display:block">
                 <p>Nimi:<br>
                     {{ account[1] }}<br>
-                    <input type="text" name="name" value="{{ account[1] }}"></p>
+                </p>
                 <p>Käyttäjätunnus:<br>
                     {{ account[2] }}<br>
-                    <input type="text" name="username" value="{{ account[2] }}"></p>
-                <!--<p>Salasana:<br>
-                <input type="password" name="password" value="{{ account[3] }}"></p> -->
+                </p>
                 <p>Ikä:<br>
                     {{ account[4] }}<br>
-                    <input type="number" name="age" value="{{ account[4] }}"></p>
                 </p>
-                <input type="submit" value="Päivitä tiedot">
-            </form>
-            <hr>
-            <form action="/delete_account", method="POST">
-                <input type="hidden" name="id" value="{{ account[0] }}">
-                <input type="submit" value="Poista käyttäjätunnus">
-            </form>
-
+                <button value="Muokkaa tietoja" onclick="
+                    document.getElementById('info').style.display='none';
+                    document.getElementById('update').style.display='block';
+                    document.getElementById('hide').style.display='block'">Muokkaa tietoja</button>
+            </div>
+            <div id="update" style="display:none">
+                <form action="/update_account" method="POST">
+                    <input type="hidden" name="id" value="{{ account[0] }}">
+                    <p>Nimi:<br>
+                        {{ account[1] }}<br>
+                    </p>
+                    <input type="text" name="name" value="{{ account[1] }}"></p>
+                    <p>Käyttäjätunnus:<br>
+                        {{ account[2] }}<br>
+                    </p>
+                    <input type="text" name="username" value="{{ account[2] }}"></p>
+                    <!--<p>Salasana:<br>
+                    <input type="password" name="password" value="{{ account[3] }}">
+                    </p> -->
+                    <p>Ikä:<br>
+                        {{ account[4] }}<br>
+                    <input type="number" name="age" value="{{ account[4] }}">
+                    </p>
+                    <input type="submit" value="Päivitä tiedot">
+                </form>
+                <hr>
+                <form action="/delete_account", method="POST">
+                    <input type="hidden" name="id" value="{{ account[0] }}">
+                    <input type="submit" value="Poista käyttäjätunnus">
+                </form>
+                <button id="hide" value="Muokkaa tietoja" onclick="
+                    document.getElementById('info').style.display='block';
+                    document.getElementById('update').style.display='none';
+                    document.getElementById('hide').style.display='none'">Piilota lomake</button>
+            </div>
         {% endif %}
     {% endblock %}

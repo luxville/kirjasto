@@ -1,14 +1,38 @@
 {% extends "layout.html" %}
     {% block body %}
 
-        <p><b>{{ author[1] }}, {{ author[2] }}</b> 
-            ({{ author[3] }}-{{ author[4]}}) {{ author[5] }}</p>
+        <p><b>{{ author[1] }}, {{ author[2] }}</b> {{ author[3] }}</p>
         <hr>
         <p>Tuotanto:<br>
         {% for work in works %}
             <a href="/material/{{ work[0] }}">{{ work[1] }}</a>
             <br>
         {% endfor %}
+        <button id="edit_author" value="Muokkaa sisällöntuottajan tietoja" onclick="
+            document.getElementById('edit_author').style.display='none';
+            document.getElementById('edit_form').style.display='block';
+            document.getElementById('hide_edit').style.display='block'">Muokkaa sisällöntuottajan tietoja</button>
+        <button id="hide" style="display:none" value="Piilota lomake" onclick="
+            document.getElementById('edit_author').style.display='block';
+            document.getElementById('edit_form').style.display='none';
+            document.getElementById('hide_edit').style.display='none'">Piilota lomake</button>
+        <div id="edit_form" style="display:none">
+            <form action="/edit_author" method="POST">
+                <input type="hidden" name="id" value="{{ author[0] }}">
+                <p>Sukunimi:<br>
+                    <input type="text" name="new_surname" value="{{ author[1] }}"></p>
+                <p>Etunimi:<br>
+                    <input type="text" name="new_first_name" value="{{ author[2] }}"></p>
+                <p>Kuvaus:<br>
+                    <textarea name="new_description" rows="4" cols="40">{{ author[3] }}</textarea></p>
+                <input type="submit" value="Päivitä tiedot">
+            </form>
+            <hr>
+            <form action="/delete_author" method="POST">
+                <input type="hidden" name="id" value="{{ author[0] }}">
+                <input type="submit" value="Poista sisällöntuottaja järjestelmästä">
+            </form>
+        </div>
         <hr>
         </p>
 

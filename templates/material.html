@@ -5,9 +5,15 @@
         <p><b>{{ work[1] }}</b></p>
         <p>Tekijä: <a href="/author/{{ author[0] }}"">{{ author[2] }} {{ author[1] }}</a></p>    
         <p>Julkaisuvuosi: {{ work[3] }}</p>
-        <p>Määrä: {{ work[4] }}</p>
+        <p>Määrä: {{ work[4] }}, joista lainattavissa </p>
         <p>Tyyppi: {{ type[1] }}</p>
         <p>Ikäraja: {{ work[6] }}</p>
+        <form action="/new_loan" method="POST">
+            <input type="hidden" name="account_id" value="{{ session.user_id }}">
+            <input type="hidden" name="material_id" value="{{ work[0] }}">
+            <input type="submit" value="Lainaa">
+        </form>
+        <hr>
         <button id="edit" value="Muokkaa tietoja" onclick="
             document.getElementById('info').style.display='none';
             document.getElementById('update').style.display='block';
