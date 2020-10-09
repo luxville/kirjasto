@@ -2,22 +2,23 @@ CREATE TABLE authors (
     id SERIAL PRIMARY KEY, 
     first_name TEXT, 
     surname TEXT, 
-    born INTEGER,
-    dead INTEGER,
-    description TEXT);
+    description TEXT
+);
 
 CREATE TABLE librarymaterial (
     id SERIAL PRIMARY KEY,
     name TEXT,
-    author_id INTEGER,
+    author_id INTEGER REFERENCES authors,
     issued INTEGER,
     amount INTEGER,
     type_id INTEGER,
-    age INTEGER);
+    age INTEGER
+);
 
 CREATE TABLE materialtypes (
     id SERIAL PRIMARY KEY,
-    name TEXT);
+    name TEXT
+);
 
 INSERT INTO materialtypes (name) VALUES ('Kirja');
 INSERT INTO materialtypes (name) VALUES ('Lehti');
@@ -31,4 +32,11 @@ CREATE TABLE accounts (
     name TEXT,
     username TEXT UNIQUE,
     password TEXT,
-    age INTEGER);
+    age INTEGER
+);
+
+CREATE TABLE loans (
+    id SERIAL PRIMARY KEY,
+    account_id INTEGER REFERENCES accounts,
+    material_id INTEGER REFERENCES librarymaterial
+);
