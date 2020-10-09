@@ -1,5 +1,5 @@
 from db import db
-import accounts, authors, materialtypes
+# import accounts, authors, loans, materialtypes
 
 class Librarymaterial(db.Model):
     id = db.Column(db.Integer, unique=True, nullable=False, primary_key=True)
@@ -18,6 +18,7 @@ class Librarymaterial(db.Model):
         self.type_id = type_id
         self.age = age
 
+
 def add_new_material(name, author_id, issued, amount, type_id, age):
     if name == None or author_id == None or issued == None or amount == None or type_id == None or age == None:
         return False
@@ -26,6 +27,12 @@ def add_new_material(name, author_id, issued, amount, type_id, age):
     db.session.execute(sql, {"name":name, "author_id":author_id, "issued":issued, "amount":amount, "type_id":type_id, "age":age})
     db.session.commit()
     return True
+
+def count_works(id):
+    result = db.session.execute("SELECT COUNT (id), IFNULL(COUNT(id), 0), FROM " \
+        "librarymaterial WHERE author_id=id")
+    counter = result.fetchone()[0]
+    return counter
 
 def get_material():
     sql = "SELECT L.id, L.name, M.name FROM librarymaterial L, materialtypes M WHERE " \
@@ -48,19 +55,7 @@ def get_works_by_author(id):
     return works
 
 def update_material(id, new_name, new_author_id, new_issued, new_amount, new_type_id, new_age):
-    """
     try:
-        sql = "UPDATE librarymaterial SET name=:name, author_id=:author_id, " \
-            "issued=:issued, amount=:amount, type=:type, age=:age WHERE id=:id"
-        result = db.session.execute(sql,{"name":name, "author_id":author_id, "issued":issued, "amount":amount, "type":type, "age":age, "id":id})
-        db.session.commit()
-        return True
-    except:
-        return False
-    """
-    print("hip")
-    try:
-        print("hep")
         material = Librarymaterial.query.get(id)
         material.name = new_name
         material.author_id = new_author_id

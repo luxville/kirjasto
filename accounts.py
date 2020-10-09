@@ -1,6 +1,6 @@
 from db import db
 from flask import session
-import authors, librarymaterial, materialtypes
+# import authors, librarymaterial, loans, materialtypes
 from werkzeug.security import check_password_hash, generate_password_hash
 
 class Accounts(db.Model):
@@ -15,6 +15,7 @@ class Accounts(db.Model):
         self.username = username
         self.password = password
         self.age = age
+
 
 def login(username, password):
     sql = "SELECT id, password, name FROM accounts WHERE username=:username"

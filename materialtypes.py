@@ -1,6 +1,6 @@
 from db import db
 from flask import session
-import accounts, authors, librarymaterial
+# import accounts, authors, librarymaterial, loans
 
 def get_types_count():
     sql = "SELECT M.id, M.name, COUNT(L.type_id) FROM materialtypes M JOIN " \
@@ -22,9 +22,3 @@ def get_types():
     result = db.session.execute(sql)
     t_list = result.fetchall()
     return t_list
-
-#def get_types_by_author(id):
-#    sql = "SELECT id, name, author_id FROM material WHERE author_id=:id"
-#    result = db.session.execute(sql, {"id":id})
-#    works = result.fetchall()
-#    return works
