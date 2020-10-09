@@ -18,10 +18,8 @@ def new_author():
 def add_new_author():
     first_name = request.form["first_name"]
     surname = request.form["surname"]
-    born = request.form["born"]
-    dead = request.form["dead"]
     description = request.form["description"]
-    if authors.add_new_author(first_name, surname, born, dead, description):
+    if authors.add_new_author(first_name, surname, description):
         return redirect("/")
     else:
         return render_template("error.html", message="Tietojen lisääminen ei onnistunut. Varmista, että olet antanut kaikki tiedot oikein.")
@@ -32,6 +30,25 @@ def author(id):
     works = librarymaterial.get_works_by_author(id)
     type = materialtypes.get_types()
     return render_template("author.html", id=id, author=author, works=works, type=type)
+
+@app.route("/edit_author", methods=["POST"])
+def edit_author():
+    id = request.form["id"]
+    new_surname = request.form["new_surname"]
+    new_first_name = request.form["new_first_name"]
+    new_description = request.form["new_description"]
+    if authors.edit_author(id, new_surname, new_first_name, new_description):
+        return redirect("/")
+    else:
+        return render_template("error.html", message="Tietojen päivittäminen ei onnistunut.")
+
+@app.route("/delete_author", methods=["POST"])
+def delete_author():
+    id = request.form["id"]
+    if authors.delete_author(id):
+        return redirect("/")
+    else:
+        return render_template("error.html", message="Sisällöntuottajan poistaminen ei onnistunut.")
 
 @app.route("/add_new_material", methods=["POST"])
 def add_new_material():
