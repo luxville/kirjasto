@@ -1,6 +1,6 @@
 from app import app
 from flask import redirect, render_template, request, session
-import accounts, authors, librarymaterial, materialtypes
+import accounts, authors, librarymaterial, loans, materialtypes
 
 @app.route("/")
 def index():
@@ -149,3 +149,12 @@ def delete_material():
         return redirect("/")
     else:
         return render_template("error.html", message="Teoksen poistaminen ei onnistunut.")
+
+@app.route("/new_loan", methods=["POST"])
+def new_loan():
+    account_id = request.form["account_id"]
+    material_id = request.form["material_id"]
+    if loans.loan(account_id, material_id):
+        return redirect("/")
+    else:
+        return render_template("error.html", message="Lainaaminen ei onnistunut.")
