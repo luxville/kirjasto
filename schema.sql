@@ -17,7 +17,7 @@ CREATE TABLE librarymaterial (
 
 CREATE TABLE materialtypes (
     id SERIAL PRIMARY KEY,
-    name TEXT
+    name TEXT UNIQUE
 );
 
 INSERT INTO materialtypes (name) VALUES ('Kirja');
