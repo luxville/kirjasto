@@ -67,10 +67,11 @@ def add_new_material():
 def material(id):
     work = librarymaterial.get_work(id)
     author = authors.get_author_by_work(id)
+    free = loans.number_of_free(id)
     a_list = authors.get_authors()
     type = materialtypes.get_type(id)
     t_list = materialtypes.get_types()
-    return render_template("material.html", id=id, work=work, author=author, a_list=a_list, type=type, t_list=t_list)
+    return render_template("material.html", id=id, work=work, author=author, free=free, a_list=a_list, type=type, t_list=t_list)
 
 @app.route("/login", methods=["POST"])
 def login():
@@ -107,7 +108,8 @@ def register():
 @app.route("/account/<int:id>")
 def account(id):
     account = accounts.get_account(id)
-    return render_template("account.html", account=account)
+    l_list = loans.get_loans(id)
+    return render_template("account.html", account=account, l_list=l_list)
 
 @app.route("/update_account", methods=["POST"])
 def update_account():
@@ -158,3 +160,12 @@ def new_loan():
         return redirect("/")
     else:
         return render_template("error.html", message="Lainaaminen ei onnistunut.")
+
+@app.route("/return_loan", methods=["POST"])
+def return_loan():
+    account_id = request.form["account_id"]
+    material_id = request.form["material_id"]
+    if loans.return_loan(account_id, material_id):
+        return redirect("/")
+    else:
+        return render_template("error.html", message="Palauttaminen ei onnistunut.")

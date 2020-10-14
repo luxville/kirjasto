@@ -49,8 +49,8 @@ def get_author(id):
     return author
 
 def get_author_by_work(id):
-    sql = "SELECT A.id, A.surname, A.first_name FROM authors A JOIN librarymaterial L " \
-        "ON L.author_id=A.id WHERE L.id=:id"
+    sql = "SELECT a.id, a.surname, a.first_name FROM authors a JOIN librarymaterial l " \
+        "ON l.author_id=a.id WHERE l.id=:id"
     result = db.session.execute(sql, {"id":id})
     author = result.fetchone()
     return author

@@ -1,5 +1,5 @@
 from db import db
-# import accounts, authors, loans, materialtypes
+import accounts, authors, loans, materialtypes
 
 class Librarymaterial(db.Model):
     id = db.Column(db.Integer, unique=True, nullable=False, primary_key=True)
@@ -35,8 +35,8 @@ def count_works(id):
     return counter
 
 def get_material():
-    sql = "SELECT L.id, L.name, M.name FROM librarymaterial L, materialtypes M WHERE " \
-        "L.type_id=M.id ORDER BY L.name"
+    sql = "SELECT l.id, l.name, m.name FROM librarymaterial l, materialtypes m WHERE " \
+        "l.type_id=m.id ORDER BY l.name"
     result = db.session.execute(sql)
     m_list = result.fetchall()
     return m_list
@@ -46,6 +46,8 @@ def get_work(id):
         "librarymaterial WHERE id=:id"
     result = db.session.execute(sql, {"id":id})
     work = result.fetchone()
+    #free = loans.number_of_free(id)
+    #work.append(free)
     return work
 
 def get_works_by_author(id):

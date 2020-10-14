@@ -18,7 +18,7 @@ class Accounts(db.Model):
 
 
 def login(username, password):
-    sql = "SELECT id, password, name FROM accounts WHERE username=:username"
+    sql = "SELECT id, password, name, age FROM accounts WHERE username=:username"
     result = db.session.execute(sql, {"username":username})
     user = result.fetchone()
     if user == None:
@@ -28,6 +28,7 @@ def login(username, password):
         if check_password_hash(hash_value,password):
             session["username"] = user[2]
             session["user_id"] = user[0]
+            session["age"] = user[3]
             return True
         else:
             return False
@@ -35,6 +36,7 @@ def login(username, password):
 def logout():
     del session["username"]
     del session["user_id"]
+    del session["age"]
 
 def register(name, username, password, age):
     hash_value = generate_password_hash(password)
