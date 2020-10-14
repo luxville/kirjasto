@@ -11,6 +11,17 @@
                 <p>Ikä:<br>
                     {{ account[4] }}<br>
                 </p>
+                <p>Lainat:<br>
+                    {% for loan in l_list %}
+                        <li>
+                            <form action="/return_loan" method="POST">
+                                <input type="hidden" name="account_id" value="{{ account[0] }}">
+                                <input type="hidden" name="material_id" value="{{ loan[0] }}">
+                                <a href="/material/{{ loan[0] }}">{{ loan[1] }}</a>, {{ loan[3] }} <input type="submit" value="Palauta">
+                            </form>
+                        </li>
+                    {% endfor %}
+                </p>
                 <button value="Muokkaa tietoja" onclick="
                     document.getElementById('info').style.display='none';
                     document.getElementById('update').style.display='block';

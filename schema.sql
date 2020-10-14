@@ -35,8 +35,11 @@ CREATE TABLE accounts (
     age INTEGER
 );
 
+
+
 CREATE TABLE loans (
     id SERIAL PRIMARY KEY,
-    account_id INTEGER REFERENCES accounts,
-    material_id INTEGER REFERENCES librarymaterial
+    account_id INTEGER REFERENCES accounts ON DELETE CASCADE,
+    material_id INTEGER REFERENCES librarymaterial,
+    returned BOOLEAN NOT NULL DEFAULT False
 );

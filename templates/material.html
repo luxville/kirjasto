@@ -5,7 +5,7 @@
         <p><b>{{ work[1] }}</b></p>
         <p>Tekijä: <a href="/author/{{ author[0] }}"">{{ author[2] }} {{ author[1] }}</a></p>    
         <p>Julkaisuvuosi: {{ work[3] }}</p>
-        <p>Määrä: {{ work[4] }}, joista lainattavissa </p>
+        <p>Määrä: {{ work[4] }}, joista lainattavissa {{ free }}</p>
         <p>Tyyppi: {{ type[1] }}</p>
         <p>Ikäraja: {{ work[6] }}</p>
         <form action="/new_loan" method="POST">
@@ -50,7 +50,7 @@
             </p>
             <p>Ikäraja:<br>
                 <input type="number" name="new_age" value="{{ work[6] }}"></p>
-            <input type="submit" value="Muokkaa tietoja">
+            <input type="submit" value="Tallenna muutokset">
         </form>
         <hr>
         <form action="/delete_material", method="POST">
