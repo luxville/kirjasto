@@ -1,17 +1,17 @@
 CREATE TABLE authors (
     id SERIAL PRIMARY KEY, 
     first_name TEXT, 
-    surname TEXT, 
+    surname TEXT NOT NULL, 
     description TEXT
 );
 
 CREATE TABLE librarymaterial (
     id SERIAL PRIMARY KEY,
-    name TEXT,
+    name TEXT NOT NULL,
     author_id INTEGER REFERENCES authors,
     issued INTEGER,
-    amount INTEGER,
-    type_id INTEGER,
+    amount INTEGER NOT NULL,
+    type_id INTEGER NOT NULL,
     age INTEGER
 );
 
@@ -29,10 +29,11 @@ INSERT INTO materialtypes (name) VALUES ('CD-levy');
 
 CREATE TABLE accounts (
     id SERIAL PRIMARY KEY,
-    name TEXT,
-    username TEXT UNIQUE,
-    password TEXT,
-    age INTEGER
+    name TEXT NOT NULL,
+    username TEXT UNIQUE NOT NULL,
+    password TEXT NOT NULL,
+    age INTEGER,
+    access TEXT NOT NULL DEFAULT 'user'
 );
 
 
