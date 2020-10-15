@@ -1,0 +1,59 @@
+{% extends "layout.html" %}
+    {% block body %}
+    <p>Kirjaston sisällöntuottajat:<br>
+        {% for author in auth_list %}
+            <li>
+                <a href="/author/{{ author[0] }}">{{ author[1] }}, {{ author[2] }}</a>
+            </li>
+        {% endfor %}
+    </p>
+    <hr>
+    <p>Kirjaston lainattavat tuotteet:<br>
+        {% for piece in m_list %}
+            <li>
+                <a href="/material/{{ piece[0] }}">{{ piece[1] }}</a>, {{ piece[2] }}
+            </li>
+        {% endfor %}
+    </p>
+    <hr>
+    <p>Tuotteiden tyypit:<br>
+        {% for type in type_list %}
+            <li>
+                {{ type[1] }}
+            </li>
+        {% endfor %}
+    </p>
+    <hr>
+    <p>Kirjaston käyttäjätunnukset:<br>
+        {% for user in acc_list %}
+            <li>
+                <a href="/account/{{ user[0] }}">{{ user[1] }}</a>
+                <p>Käyttäjätunnus: {{ user[2] }}</p>
+                <p>Ikä: {{ user[4] }}</p>
+                =========================================
+                <br><br>
+            </li>
+        {% endfor %}
+    </p>
+    <hr>
+    <p>Lainaushistoria:<br>
+        <table>
+            <tr>
+                <td>Teoksen nimi</td>
+                <td>Tekijän nimi</td>
+                <td>Tyyppi</td>
+                <td>Lainaajan nimi</td>
+                <td>Palautettu</td>
+            </tr>
+        {% for loan in loan_history %}
+            <tr>
+                <td>{{ loan[0] }}</td>
+                <td>{{ loan[1] }}, {{ loan[2] }}</td>
+                <td>{{ loan[3] }}</td>
+                <td>{{ loan[4] }}</td>
+                <td>{{ loan[5] }}</td>
+            </tr>
+        {% endfor %}
+        </table>
+    </p>
+    {% endblock %}

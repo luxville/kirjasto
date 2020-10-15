@@ -8,6 +8,7 @@
         <p>Määrä: {{ work[4] }}, joista lainattavissa {{ free }}</p>
         <p>Tyyppi: {{ type[1] }}</p>
         <p>Ikäraja: {{ work[6] }}</p>
+        <p>Lainattu yhteensä {{ times_loaned[0] }} kertaa.</p>
         <form action="/new_loan" method="POST">
             <input type="hidden" name="account_id" value="{{ session.user_id }}">
             <input type="hidden" name="material_id" value="{{ work[0] }}">

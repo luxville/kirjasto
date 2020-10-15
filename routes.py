@@ -1,5 +1,5 @@
 from app import app
-from flask import redirect, render_template, request, session
+from flask import flash, redirect, render_template, request, session
 import accounts, authors, librarymaterial, loans, materialtypes
 
 @app.route("/")
@@ -22,7 +22,8 @@ def add_new_author():
     if authors.add_new_author(first_name, surname, description):
         return redirect("/")
     else:
-        return render_template("error.html", message="Tietojen lisääminen ei onnistunut. Varmista, että olet antanut kaikki tiedot oikein.")
+        flash("Tietojen lisääminen ei onnistunut. Varmista, että olet antanut kaikki tiedot oikein.")
+        return redirect("/add_new_author") #render_template("error.html", message="x")
     
 @app.route("/author/<int:id>")
 def author(id):
@@ -68,10 +69,11 @@ def material(id):
     work = librarymaterial.get_work(id)
     author = authors.get_author_by_work(id)
     free = loans.number_of_free(id)
+    times_loaned = loans.times_loaned(id)
     a_list = authors.get_authors()
     type = materialtypes.get_type(id)
     t_list = materialtypes.get_types()
-    return render_template("material.html", id=id, work=work, author=author, free=free, a_list=a_list, type=type, t_list=t_list)
+    return render_template("material.html", id=id, work=work, author=author, free=free, times_loaned=times_loaned, a_list=a_list, type=type, t_list=t_list)
 
 @app.route("/login", methods=["POST"])
 def login():
@@ -165,7 +167,17 @@ def new_loan():
 def return_loan():
     account_id = request.form["account_id"]
     material_id = request.form["material_id"]
+    own_page = "/account/" + account_id
     if loans.return_loan(account_id, material_id):
-        return redirect("/")
+        return redirect(own_page)
     else:
         return render_template("error.html", message="Palauttaminen ei onnistunut.")
+
+@app.route("/maintenance")
+def maintenance():
+    auth_list = authors.get_authors()
+    m_list = librarymaterial.get_material()
+    type_list = materialtypes.get_types()
+    acc_list = accounts.get_accounts()
+    loan_history = loans.get_loan_history()
+    return render_template("maintenance.html", auth_list=auth_list, m_list=m_list, type_list=type_list, acc_list=acc_list, loan_history=loan_history)
