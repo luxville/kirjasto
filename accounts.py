@@ -1,5 +1,5 @@
 from db import db
-from flask import session
+from flask import flash, session
 # import authors, librarymaterial, loans, materialtypes
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -22,6 +22,7 @@ def login(username, password):
     result = db.session.execute(sql, {"username":username})
     user = result.fetchone()
     if user == None:
+        flash("Käyttäjätunnusta ei löydy. Tarkista käyttäjätunnus tai rekisteröidy.")
         return False
     else:
         hash_value = user[1]
@@ -31,6 +32,7 @@ def login(username, password):
             session["age"] = user[3]
             return True
         else:
+            flash("Salasana ja käyttäjätunnus eivät täsmää. Tarkista tiedot.")
             return False
 
 def logout():
@@ -54,6 +56,12 @@ def get_account(id):
     result = db.session.execute(sql, {"id":id})
     account = result.fetchone()
     return account
+
+def get_accounts():
+    sql = "SELECT id, name, username, password, age FROM accounts"
+    result = db.session.execute(sql, {"id":id})
+    acc_list = result.fetchall()
+    return acc_list
 
 def update(id, new_name, new_username, new_age):
     try:

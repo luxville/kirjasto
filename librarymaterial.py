@@ -42,12 +42,10 @@ def get_material():
     return m_list
 
 def get_work(id):
-    sql = "SELECT id, name, author_id, issued, amount, type_id, age FROM " \
-        "librarymaterial WHERE id=:id"
+    sql = "SELECT id, name, author_id, issued, amount, type_id, age FROM librarymaterial " \
+        "WHERE id=:id"
     result = db.session.execute(sql, {"id":id})
     work = result.fetchone()
-    #free = loans.number_of_free(id)
-    #work.append(free)
     return work
 
 def get_works_by_author(id):
