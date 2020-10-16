@@ -1,3 +1,6 @@
+
+
+
 CREATE TABLE authors (
     id SERIAL PRIMARY KEY, 
     first_name TEXT, 
@@ -36,11 +39,12 @@ CREATE TABLE accounts (
     access TEXT NOT NULL DEFAULT 'user'
 );
 
-
-
 CREATE TABLE loans (
     id SERIAL PRIMARY KEY,
     account_id INTEGER REFERENCES accounts ON DELETE CASCADE,
     material_id INTEGER REFERENCES librarymaterial,
     returned BOOLEAN NOT NULL DEFAULT False
 );
+
+--UPDATE accounts SET username='paakayttaja', access='admin' WHERE id=1;
+
