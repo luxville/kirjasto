@@ -9,12 +9,14 @@ class Accounts(db.Model):
     username = db.Column(db.String(40), unique=True, nullable=False)
     password = db.Column(db.String(256), nullable=False)
     age = db.Column(db.Integer)
+    #access = db.Column(db.String(5), nullable=False)
 
-    def __init__(self, name, username, password, age):
+    def __init__(self, name, username, password, age): #, access):
         self.name = name
         self.username = username
         self.password = password
         self.age = age
+        #self.access = access
 
 
 def logged_in():

@@ -16,6 +16,9 @@ def new_author():
 
 @app.route("/add_new_author", methods=["POST"])
 def add_new_author():
+    if not accounts.is_admin():
+        flash("Ei oikeuksia sisällöntuottajien lisäämiseen.")
+        return redirect("/")
     first_name = request.form["first_name"]
     surname = request.form["surname"]
     description = request.form["description"]
