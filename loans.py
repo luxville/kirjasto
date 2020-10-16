@@ -1,4 +1,5 @@
 from db import db
+from flask import flash
 import accounts, authors, librarymaterial, materialtypes
 
 class Loans(db.Model):
@@ -14,16 +15,26 @@ class Loans(db.Model):
 
 
 def loan(account_id, material_id):
+    fault = False
+    if accounts.user_id() == 0:
+        flash("Ei oikeuksia lainaamiseen.")
+        fault = True
     if account_id == None or material_id == None:
-        return False
+        flash("Jotain meni pieleen lainauksen kanssa...")
+        fault = True
     a_age = accounts.get_account(account_id)[4]
     m_age = librarymaterial.get_work(material_id)[6]
     if m_age > a_age:
-        return False
+        flash("Olet liian nuori tämän sisällön lainaamiseen.")
+        fault = True
     loaned = find_loan_count(account_id, material_id)
     if loaned != 0:
-        return False
+        flash("Samaa sisältöä voi olla lainassa samalla henkilöllä kerrallaan vain yksi kappale.")
+        fault = True
     if number_of_free(material_id) == 0:
+        flash("Kaikki kappaleet ovat lainassa.")
+        fault = True
+    if fault:
         return False
     sql = "INSERT INTO loans (account_id, material_id, returned) VALUES (:account_id, " \
         ":material_id, False)"
@@ -54,12 +65,11 @@ def number_of_free(material_id):
     free = number_of_material - number_of_loaned
     return free
 
-def number_of_loans(material_id):
+"""def number_of_loans(material_id):
     sql = "SELECT COUNT (*) FROM loans WHERE material_id=:material_id"
     result = db.session.execute(sql, {"material_id":material_id})
     number_of_loans = result.fetchone()[0]
-    print(number_of_loans, "hep")
-    return number_of_loans
+    return number_of_loans"""
 
 def get_loans(account_id):
     sql = "SELECT lo.material_id, li.name, li.type_id, m.name FROM loans lo JOIN " \
@@ -80,8 +90,11 @@ def get_loan_history():
     return loan_history
 
 def return_loan(account_id, material_id):
-    id = find_loan_id(account_id, material_id)
+    if accounts.user_id() != int(account_id):
+        flash("Ei oikeuksia lainan palauttamiseen.")
+        return False
     try:
+        id = find_loan_id(account_id, material_id)
         loan = Loans.query.get(id)
         loan.returned = True
         db.session.commit() 
@@ -92,5 +105,5 @@ def return_loan(account_id, material_id):
 def times_loaned(material_id):
     sql = "SELECT COUNT(*) FROM loans WHERE material_id=:material_id"
     result = db.session.execute(sql, {"material_id":material_id})
-    times_loaned = result.fetchone
+    times_loaned = result.fetchone()
     return times_loaned

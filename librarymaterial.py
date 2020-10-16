@@ -1,4 +1,5 @@
 from db import db
+from flask import flash
 import accounts, authors, loans, materialtypes
 
 class Librarymaterial(db.Model):
@@ -20,7 +21,24 @@ class Librarymaterial(db.Model):
 
 
 def add_new_material(name, author_id, issued, amount, type_id, age):
-    if name == None or author_id == None or issued == None or amount == None or type_id == None or age == None:
+    # if not accounts.is_admin():
+    #   flash("Ei oikeuksia uuden sisällön lisäämiseen.")
+    #   return False
+    faults = False
+    if name == None or author_id == None or amount == None or type_id == None:
+        flash("Anna kaikki pyydetyt tiedot.")
+        faults = True
+    if age != None:
+        if int(age) < 0:
+            flash("Anna kelvollinen ikä.")
+            faults = True
+        if int(age) > 18:
+            flash("Kaiken kirjaston materiaalin tulee olla sallittua täysi-ikäisille.")
+            faults = True
+    if int(amount) < 0:
+        flash("Aineistoa tulee olla jokin kelvollinen määrä.")
+        faults = True
+    if faults:
         return False
     sql = "INSERT INTO librarymaterial (name, author_id, issued, amount, type_id, age) " \
         "VALUES (:name, :author_id, :issued, :amount, :type_id, :age)"
@@ -55,6 +73,19 @@ def get_works_by_author(id):
     return works
 
 def update_material(id, new_name, new_author_id, new_issued, new_amount, new_type_id, new_age):
+    # if not accounts.is_admin():
+    #   flash("Ei oikeuksia sisällön muokkaamiseen.")
+    #   return False
+    if new_age != None:
+        if int(new_age) < 0:
+            flash("Anna kelvollinen ikä.")
+            return False
+        if int(new_age) > 18:
+            flash("Kaiken kirjaston materiaalin tulee olla sallittua täysi-ikäisille.")
+            return False
+    if int(new_amount) < 0:
+        flash("Aineistoa tulee olla jokin kelvollinen määrä.")
+        return False
     try:
         material = Librarymaterial.query.get(id)
         material.name = new_name
@@ -69,6 +100,9 @@ def update_material(id, new_name, new_author_id, new_issued, new_amount, new_typ
         return False
 
 def delete_material(id):
+    # if not accounts.is_admin():
+    #   flash("Ei oikeuksia sisällön poistamiseen.")
+    #   return False
     try:
         material = Librarymaterial.query.get(id)
         db.session.delete(material)

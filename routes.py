@@ -20,6 +20,7 @@ def add_new_author():
     surname = request.form["surname"]
     description = request.form["description"]
     if authors.add_new_author(first_name, surname, description):
+        flash("Sisällöntuottajan lisääminen järjestelmään onnistui.")
         return redirect("/")
     else:
         flash("Tietojen lisääminen ei onnistunut. Varmista, että olet antanut kaikki tiedot oikein.")
@@ -39,17 +40,21 @@ def edit_author():
     new_first_name = request.form["new_first_name"]
     new_description = request.form["new_description"]
     if authors.edit_author(id, new_surname, new_first_name, new_description):
+        flash("Sisällöntuottajan tietojen päivitys onnistui.")
         return redirect("/")
     else:
-        return render_template("error.html", message="Tietojen päivittäminen ei onnistunut.")
+        flash("Tietojen päivittäminen ei onnistunut. Tarkista antamasi tiedot.")
+        return redirect("/")
 
 @app.route("/delete_author", methods=["POST"])
 def delete_author():
     id = request.form["id"]
     if authors.delete_author(id):
+        flash("Sisällöntuottaja on poistettu järjestelmästä.")
         return redirect("/")
     else:
-        return render_template("error.html", message="Sisällöntuottajan poistaminen ei onnistunut.")
+        flash("Sisällöntuottajan poistaminen ei onnistunut.")
+        return redirect("/")
 
 @app.route("/add_new_material", methods=["POST"])
 def add_new_material():
@@ -60,9 +65,11 @@ def add_new_material():
     type_id = request.form["type_id"]
     age = request.form["age"]
     if librarymaterial.add_new_material(name, author_id, issued, amount, type_id, age):
+        flash("Tiedot on lisätty järjestelmään.")
         return redirect("/")
     else:
-        return render_template("error.html", message="Tietojen lisääminen ei onnistunut. Varmista, että olet antanut kaikki tiedot oikein.")
+        flash("Tietojen lisääminen ei onnistunut. Varmista, että olet antanut kaikki tiedot oikein.")
+        return redirect("/")
 
 @app.route("/material/<int:id>")
 def material(id):
@@ -82,7 +89,8 @@ def login():
     if accounts.login(username, password):
         return redirect("/")
     else:
-        return render_template("error.html", message="Kirjautuminen ei onnistunut. Käyttäjätunnus ja salasana eivät täsmää.")
+        flash("Kirjautuminen ei onnistunut.")
+        return redirect("/")
 
 @app.route("/logout")
 def logout():
@@ -101,14 +109,19 @@ def register():
         name = request.form["name"]
         username = request.form["username"]
         password = request.form["password1"]
+        password2 = request.form["password2"]
         age = request.form["age"]
-        if accounts.register(name, username, password, age):
+        if accounts.register(name, username, password, password2, age):
+            flash("Rekisteröityminen onnistui.")
             return redirect("/")
         else:
-            return render_template("error.html", message="Rekisteröityminen ei onnistunut.")
+            flash("Rekisteröityminen ei onnistunut.")
+            return render_template("register.html", name=name, username=username, age=age)
 
 @app.route("/account/<int:id>")
 def account(id):
+    if not accounts.is_admin():
+        id = accounts.user_id()
     account = accounts.get_account(id)
     l_list = loans.get_loans(id)
     return render_template("account.html", account=account, l_list=l_list)
@@ -120,17 +133,46 @@ def update_account():
     new_username = request.form["username"]
     new_age = request.form["age"]
     if accounts.update(id, new_name, new_username, new_age):
+        flash("Tietojen päivittäminen onnistui.")
         return redirect("/")
     else:
-        return render_template("error.html", message="Tietojen päivittäminen ei onnistunut.")
+        flash("Tietojen päivittäminen ei onnistunut.")
+        return redirect("/")
     
+@app.route("/change_password", methods=["POST"])
+def change_password():
+    id = request.form["id"]
+    old_password = request.form["old_password"]
+    password = request.form["new_password"]
+    password2 = request.form["new_password2"]
+    own_page = "/account/" + id
+    if accounts.change_password(id, old_password, password, password2):
+        flash("Salasanan vaihtaminen onnistui.")
+        return redirect(own_page)
+    else:
+        flash("Salasanan vaihtaminen ei onnistunut.")
+        return redirect(own_page)
+
+@app.route("/reset_password", methods=["POST"])
+def reset_password():
+    id = request.form["id"]
+    username = request.form["username"]
+    if accounts.reset_password(id, username):
+        flash("Salasanan nollaus onnistui.")
+        return redirect("/maintenance")
+    else:
+        flash("Salasanan nollaus ei onnistunut.")
+        return redirect("/maintenance")
+
 @app.route("/delete_account", methods=["POST"])
 def delete_account():
     id = request.form["id"]
     if accounts.delete_account(id):
+        flash("Käyttäjätilin poistaminen onnistui.")
         return redirect("/")
     else:
-        return render_template("error.html", message="Käyttäjätilin poistaminen ei onnistunut.")
+        flash("Käyttäjätilin poistaminen ei onnistunut.")
+        return redirect("/")
 
 @app.route("/update_material", methods=["POST"])
 def update_material():
@@ -142,26 +184,32 @@ def update_material():
     new_type_id = request.form["new_type_id"]
     new_age = request.form["new_age"]
     if librarymaterial.update_material(id, new_name, new_author_id, new_issued, new_amount, new_type_id, new_age):
+        flash("Tietojen päivittäminen onnistui.")
         return redirect("/")
     else:
-        return render_template("error.html", message="Tietojen päivittäminen ei onnistunut.")
+        flash("Tietojen päivittäminen ei onnistunut.")
+        return redirect("/")
     
 @app.route("/delete_material", methods=["POST"])
 def delete_material():
     id = request.form["id"]
     if librarymaterial.delete_material(id):
+        flash("Teoksen poistaminen onnistui.")
         return redirect("/")
     else:
-        return render_template("error.html", message="Teoksen poistaminen ei onnistunut.")
+        flash("Teoksen poistaminen ei onnistunut.")
+        return redirect("/")
 
 @app.route("/new_loan", methods=["POST"])
 def new_loan():
     account_id = request.form["account_id"]
     material_id = request.form["material_id"]
     if loans.loan(account_id, material_id):
+        flash("Lainaaminen onnistui.")
         return redirect("/")
     else:
-        return render_template("error.html", message="Lainaaminen ei onnistunut.")
+        flash("Lainaaminen ei onnistunut.")
+        return redirect("/")
 
 @app.route("/return_loan", methods=["POST"])
 def return_loan():
@@ -169,12 +217,17 @@ def return_loan():
     material_id = request.form["material_id"]
     own_page = "/account/" + account_id
     if loans.return_loan(account_id, material_id):
+        flash("Palauttaminen onnistui.")
         return redirect(own_page)
     else:
-        return render_template("error.html", message="Palauttaminen ei onnistunut.")
+        flash("Palauttaminen ei onnistunut.")
+        return redirect(own_page)
 
 @app.route("/maintenance")
 def maintenance():
+    if not accounts.is_admin():
+        flash("Ei oikeuksia ylläpitosivulle.")
+        return redirect("/")
     auth_list = authors.get_authors()
     m_list = librarymaterial.get_material()
     type_list = materialtypes.get_types()

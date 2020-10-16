@@ -1,5 +1,6 @@
 from db import db
-# import accounts, librarymaterial, loans, materialtypes
+from flask import flash
+import accounts, librarymaterial, loans, materialtypes
 
 class Authors(db.Model):
     id = db.Column(db.Integer, unique=True, nullable=False, primary_key=True)
@@ -14,6 +15,9 @@ class Authors(db.Model):
 
 
 def add_new_author(first_name, surname, description):
+    if not accounts.is_admin():
+        flash("Ei oikeuksia sisällöntuottajan lisäämiseen.")
+        return False
     if first_name == None or surname == None or description == None:
         return False
     sql = "INSERT INTO authors (first_name, surname, description) VALUES " \
@@ -23,6 +27,9 @@ def add_new_author(first_name, surname, description):
     return True
 
 def edit_author(id, new_surname, new_first_name, new_description):
+    if not accounts.is_admin():
+        flash("Ei oikeuksia sisällöntuottajan tietojen muokkaamiseen.")
+        return False
     try:
         author = Authors.query.get(id)
         author.surname = new_surname
@@ -34,6 +41,9 @@ def edit_author(id, new_surname, new_first_name, new_description):
         return False
 
 def delete_author(id):
+    if not accounts.is_admin():
+        flash("Ei oikeuksia sisällöntuottajan poistamiseen.")
+        return False
     try:
         author = Authors.query.get(id)
         db.session.delete(author)
