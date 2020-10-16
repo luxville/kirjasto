@@ -29,6 +29,12 @@
             <li>
                 <a href="/account/{{ user[0] }}">{{ user[1] }}</a>
                 <p>Käyttäjätunnus: {{ user[2] }}</p>
+                <p>Salasana: {{ user[3] }}</p>
+                <form action="/reset_password" method="POST">
+                    <input type="hidden" name="id" value="{{ user[0] }}">
+                    <input type="hidden" name="username" value="{{ user[2] }}">
+                    <input type="submit" value="Nollaa salasana">
+                </form>
                 <p>Ikä: {{ user[4] }}</p>
                 =========================================
                 <br><br>

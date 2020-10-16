@@ -38,14 +38,25 @@
                         {{ account[2] }}<br>
                     </p>
                     <input type="text" name="username" value="{{ account[2] }}"></p>
-                    <!--<p>Salasana:<br>
-                    <input type="password" name="password" value="{{ account[3] }}">
-                    </p> -->
                     <p>Ikä:<br>
                         {{ account[4] }}<br>
                     <input type="number" name="age" value="{{ account[4] }}">
                     </p>
                     <input type="submit" value="Päivitä tiedot">
+                </form>
+                <hr>
+                <form action="/change_password", method="POST">
+                    <input type="hidden" name="id" value="{{ account[0] }}">
+                    <p>Vanha salasana:<br>
+                        <input type="password" name="old_password" required>
+                    </p>
+                    <p>Uusi salasana:<br>
+                        <input type="password" name="new_password" required>
+                    </p>
+                    <p>Toista uusi salasana:<br>
+                    <input type="password" name="new_password2" required>
+                    </p>
+                    <input type="submit" value="Vaihda salasana">
                 </form>
                 <hr>
                 <form action="/delete_account", method="POST">

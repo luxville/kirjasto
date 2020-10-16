@@ -19,6 +19,7 @@
                     <!-- Do something with the message -->
                     {{ message }}
                 {% endfor %}
+                <hr>
             {% endif %}
         {% endwith %}
 
@@ -27,9 +28,10 @@
             Sisältö
         </p>
         {% endblock %}
-
+        {% if session.username %}
+            <a href="/maintenance">Ylläpito</a>
+        {% endif %}
         <hr>
         <a href="/">Takaisin etusivulle</a>
-        <a href="/maintenance">Ylläpito</a>
     </body>
 </html>
