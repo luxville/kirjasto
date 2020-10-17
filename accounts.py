@@ -1,7 +1,8 @@
 from db import db
-from flask import flash, session
+from flask import abort, flash, request, session
 # import authors, librarymaterial, loans, materialtypes
 from werkzeug.security import check_password_hash, generate_password_hash
+import os
 
 class Accounts(db.Model):
     id = db.Column(db.Integer, unique=True, nullable=False, primary_key=True)
@@ -31,11 +32,10 @@ def is_admin():
     access = result.fetchone()[0]
     if access == "admin":
         return True
-    #flash("Toiminnon käyttäminen vaatii pääkäyttäjän oikeudet.")
     return False
 
 def login(username, password):
-    sql = "SELECT id, password, name, age FROM accounts WHERE username=:username"
+    sql = "SELECT id, password, name FROM accounts WHERE username=:username"
     result = db.session.execute(sql, {"username":username})
     user = result.fetchone()
     if user == None:
@@ -46,7 +46,7 @@ def login(username, password):
         if check_password_hash(hash_value,password):
             session["username"] = user[2]
             session["user_id"] = user[0]
-            session["age"] = user[3]
+            session["csrf_token"] = os.urandom(16).hex()
             return True
         else:
             flash("Salasana ja käyttäjätunnus eivät täsmää. Tarkista tiedot.")
@@ -55,7 +55,7 @@ def login(username, password):
 def logout():
     del session["username"]
     del session["user_id"]
-    del session["age"]
+    del session["csrf_token"]
 
 def register(name, username, password, password2, age):
     if password != password2:
@@ -85,12 +85,14 @@ def get_account(id):
 def get_accounts():
     if user_id() == 0:
         return []
-    sql = "SELECT id, name, username, password, age FROM accounts"
+    sql = "SELECT id, name, username, age FROM accounts WHERE access='user'"
     result = db.session.execute(sql, {"id":id})
     acc_list = result.fetchall()
     return acc_list
 
-def update(id, new_name, new_username, new_age):
+def update(id, new_name, new_username, new_age, csrf_token):
+    if session["csrf_token"] != csrf_token:
+        abort(403)
     id = user_id()
     if not 0 < int(new_age) < 130:
         flash("Anna kelvollinen ikä.")
@@ -106,7 +108,9 @@ def update(id, new_name, new_username, new_age):
         flash("Jokin meni pieleen.")
         return False
 
-def change_password(id, old_password, password, password2):
+def change_password(id, old_password, password, password2, csrf_token):
+    if session["csrf_token"] != csrf_token:
+        abort(403)
     user = user_id()
     if user != int(id):
         flash("Ei oikeuksia muuttaa salasanaa.")
@@ -131,7 +135,9 @@ def change_password(id, old_password, password, password2):
             except:
                 return False
 
-def reset_password(id, username):
+def reset_password(id, username, csrf_token):
+    if session["csrf_token"] != csrf_token:
+        abort(403)
     if not is_admin():
         flash("Ei oikeuksia salasanan vaihtoon.")
         return False

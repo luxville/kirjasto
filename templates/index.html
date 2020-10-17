@@ -10,8 +10,9 @@
                 {% endfor %}
             </p>
             <hr>
-            <p>Kirjastossa on tällä hetkellä lainattavia tuotteita {{ counter }} 
-                sisällöntuottajalta. Voit muokata kirjailijan tai muun aineiston 
+            <p>Kirjastossa on tällä hetkellä lainattavissa yhteensä {{ counter[0] }}
+                tuotetta {{ counter[1] }} sisällöntuottajalta. Tähän mennessä lainauksia
+                on tehty {{ counter[2] }} kertaa. Voit muokata kirjailijan tai muun aineiston 
                 tuottajan tietoja tai lisätä niille lainattavia teoksia nimessä 
                 olevan linkin kautta.</p>
 

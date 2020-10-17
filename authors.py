@@ -1,5 +1,5 @@
 from db import db
-from flask import flash
+from flask import abort, flash, request, session
 import accounts, librarymaterial, loans, materialtypes
 
 class Authors(db.Model):
@@ -14,7 +14,9 @@ class Authors(db.Model):
         self.description = description
 
 
-def add_new_author(first_name, surname, description):
+def add_new_author(first_name, surname, description, csrf_token):
+    if session["csrf_token"] != csrf_token:
+        abort(403)
     if not accounts.is_admin():
         flash("Ei oikeuksia sisällöntuottajan lisäämiseen.")
         return False
@@ -26,7 +28,9 @@ def add_new_author(first_name, surname, description):
     db.session.commit()
     return True
 
-def edit_author(id, new_surname, new_first_name, new_description):
+def edit_author(id, new_surname, new_first_name, new_description, csrf_token):
+    if session["csrf_token"] != csrf_token:
+        abort(403)
     if not accounts.is_admin():
         flash("Ei oikeuksia sisällöntuottajan tietojen muokkaamiseen.")
         return False
@@ -40,7 +44,9 @@ def edit_author(id, new_surname, new_first_name, new_description):
     except:
         return False
 
-def delete_author(id):
+def delete_author(id, csrf_token):
+    if session["csrf_token"] != csrf_token:
+        abort(403)
     if not accounts.is_admin():
         flash("Ei oikeuksia sisällöntuottajan poistamiseen.")
         return False

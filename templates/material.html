@@ -26,6 +26,7 @@
             document.getElementById('update').style.display='none';
             document.getElementById('info').style.display='block'">Piilota lomake</button>
         <form action="/update_material" method="POST">
+            <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
             <input type="hidden" name="id" value="{{ work[0] }}">
             <p>Teoksen nimi:<br>
                 <input type="text" name="new_name" value="{{ work[1] }}"></p>

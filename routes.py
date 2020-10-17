@@ -1,33 +1,53 @@
 from app import app
-from flask import flash, redirect, render_template, request, session
+from flask import abort, flash, redirect, render_template, request, session
 import accounts, authors, librarymaterial, loans, materialtypes
+import datetime
 
 @app.route("/")
 def index():
     m_list = librarymaterial.get_material()
-    counter = authors.get_count()
+    lm_counter = librarymaterial.get_count()
+    a_counter = authors.get_count()
+    lo_counter = loans.get_count()
+    counter = [lm_counter, a_counter, lo_counter]
     a_list = authors.get_authors()
     t_list = materialtypes.get_types_count()
     return render_template("index.html", m_list=m_list, counter=counter, a_list=a_list, t_list=t_list)
 
 @app.route("/new_author")
 def new_author():
+    if not accounts.is_admin():
+        flash("Ei oikeutta tietojen päivittämiseen.")
+        return redirect("/")
     return render_template("new_author.html")
 
 @app.route("/add_new_author", methods=["POST"])
 def add_new_author():
+    csrf_token = request.form["csrf_token"]
     if not accounts.is_admin():
         flash("Ei oikeuksia sisällöntuottajien lisäämiseen.")
         return redirect("/")
+    fault = False
     first_name = request.form["first_name"]
+    if len(first_name) > 40:
+        flash("Liian pitkä etunimi.")
+        fault = True
     surname = request.form["surname"]
+    if len(surname) > 40:
+        flash("Liian pitkä sukunimi.")
+        fault = True
     description = request.form["description"]
-    if authors.add_new_author(first_name, surname, description):
+    if len(description) > 5000:
+        flash("Liian pitkä kuvaus.")
+        fault = True
+    if fault:
+        return redirect("/")
+    if authors.add_new_author(first_name, surname, description, csrf_token):
         flash("Sisällöntuottajan lisääminen järjestelmään onnistui.")
         return redirect("/")
     else:
         flash("Tietojen lisääminen ei onnistunut. Varmista, että olet antanut kaikki tiedot oikein.")
-        return redirect("/add_new_author") #render_template("error.html", message="x")
+        return redirect("/add_new_author") 
     
 @app.route("/author/<int:id>")
 def author(id):
@@ -38,11 +58,24 @@ def author(id):
 
 @app.route("/edit_author", methods=["POST"])
 def edit_author():
+    csrf_token = request.form["csrf_token"]
+    fault = False
     id = request.form["id"]
     new_surname = request.form["new_surname"]
+    if len(new_surname) > 40:
+        flash("Liian pitkä sukunimi.")
+        fault = True
     new_first_name = request.form["new_first_name"]
+    if len(new_first_name) > 40:
+        flash("Liian pitkä etunimi.")
+        fault = True
     new_description = request.form["new_description"]
-    if authors.edit_author(id, new_surname, new_first_name, new_description):
+    if len(new_description) > 5000:
+        flash("Liian pitkä kuvaus.")
+        fault = True
+    if fault:
+        return redirect("/")
+    if authors.edit_author(id, new_surname, new_first_name, new_description, csrf_token):
         flash("Sisällöntuottajan tietojen päivitys onnistui.")
         return redirect("/")
     else:
@@ -51,8 +84,9 @@ def edit_author():
 
 @app.route("/delete_author", methods=["POST"])
 def delete_author():
+    csrf_token = request.form["csrf_token"]
     id = request.form["id"]
-    if authors.delete_author(id):
+    if authors.delete_author(id, csrf_token):
         flash("Sisällöntuottaja on poistettu järjestelmästä.")
         return redirect("/")
     else:
@@ -61,12 +95,40 @@ def delete_author():
 
 @app.route("/add_new_material", methods=["POST"])
 def add_new_material():
+    if not accounts.is_admin():
+        flash("Ei oikeutta tietojen päivittämiseen.")
+        return redirect("/")
+    fault = False
     name = request.form["name"]
+    if len(name) > 140:
+        flash("Nimi on liian pitkä.")
+        fault = True
     author_id = request.form["author_id"]
     issued = request.form["issued"]
+    if int(issued) < 1700:
+        flash("Tarkista julkaisuvuosi. Tällainen sisältö kuuluu museoon.")
+        fault = True
+    if int(issued) > datetime.datetime.now().year:
+        flash("Tarkista julkaisuvuosi. Kirjastoon otetaan vain jo julkaistua sisältöä.")
+        fault = True
     amount = request.form["amount"]
+    if int(amount) <= 0:
+        flash("Uutta sisältöä on oltava vähintään 1 kappale.")
+        fault = True
+    if int(amount) > 100:
+        flash("Tämä on nyt jo liikaa...")
+        fault = True 
     type_id = request.form["type_id"]
     age = request.form["age"]
+    if int(age) < 0:
+        flash("Ikäraja ei voi olla negatiivinen.")
+        fault = True
+    if int(age) > 18:
+        flash("Kaiken kirjaston materiaalin tulee olla sallittua täysi-ikäisille.")
+        fault = True
+    if fault:
+        flash("Tietojen lisääminen ei onnistunut.")
+        return redirect("/")
     if librarymaterial.add_new_material(name, author_id, issued, amount, type_id, age):
         flash("Tiedot on lisätty järjestelmään.")
         return redirect("/")
@@ -88,7 +150,13 @@ def material(id):
 @app.route("/login", methods=["POST"])
 def login():
     username = request.form["username"]
+    if len(username) > 40:
+        flash("Liian pitkä käyttäjätunnus.")
+        return redirect("/")
     password = request.form["password"]
+    if len(password) > 256:
+        flash("Liian pitkä salasana.")
+        return redirect("/")
     if accounts.login(username, password):
         return redirect("/")
     else:
@@ -109,11 +177,26 @@ def register():
     if request.method == "GET":
         return render_template("register.html")
     if request.method == "POST":
+        fault = False
         name = request.form["name"]
+        if len(name) > 100:
+            flash("Liian pitkä nimi.")
+            fault = True
         username = request.form["username"]
+        if len(username) > 40:
+            flash("Liian pitkä käyttäjätunnus.")
+            fault = True
         password = request.form["password1"]
         password2 = request.form["password2"]
+        if password != password2:
+            flash("Anna sama salasana kahdesti.")
+            fault = True
         age = request.form["age"]
+        if not 0 < int(age) < 130:
+            flash("Anna kelvollinen ikä.")
+            fault = True
+        if fault:
+            return redirect("/")
         if accounts.register(name, username, password, password2, age):
             flash("Rekisteröityminen onnistui.")
             return redirect("/")
@@ -131,11 +214,24 @@ def account(id):
 
 @app.route("/update_account", methods=["POST"])
 def update_account():
+    csrf_token = request.form["csrf_token"]
+    fault = False
     id = request.form["id"]
     new_name = request.form["name"]
+    if len(new_name) > 100:
+            flash("Liian pitkä nimi.")
+            fault = True
     new_username = request.form["username"]
+    if len(new_username) > 40:
+            flash("Liian pitkä käyttäjätunnus.")
+            fault = True
     new_age = request.form["age"]
-    if accounts.update(id, new_name, new_username, new_age):
+    if not 0 < int(new_age) < 130:
+        flash("Anna kelvollinen ikä.")
+        fault = True
+    if fault:
+        return redirect("/")
+    if accounts.update(id, new_name, new_username, new_age, csrf_token):
         flash("Tietojen päivittäminen onnistui.")
         return redirect("/")
     else:
@@ -144,12 +240,16 @@ def update_account():
     
 @app.route("/change_password", methods=["POST"])
 def change_password():
+    csrf_token = request.form["csrf_token"]
     id = request.form["id"]
     old_password = request.form["old_password"]
     password = request.form["new_password"]
     password2 = request.form["new_password2"]
     own_page = "/account/" + id
-    if accounts.change_password(id, old_password, password, password2):
+    if password != password2:
+        flash("Salasanat eivät täsmää.")
+        return redirect(own_page)
+    if accounts.change_password(id, old_password, password, password2, csrf_token):
         flash("Salasanan vaihtaminen onnistui.")
         return redirect(own_page)
     else:
@@ -158,14 +258,18 @@ def change_password():
 
 @app.route("/reset_password", methods=["POST"])
 def reset_password():
+    csrf_token = request.form["csrf_token"]
+    if not accounts.is_admin():
+        flash("Ei oikeutta salasanan nollaamiseen.")
+        return redirect("/")
     id = request.form["id"]
     username = request.form["username"]
-    if accounts.reset_password(id, username):
+    if accounts.reset_password(id, username, csrf_token):
         flash("Salasanan nollaus onnistui.")
-        return redirect("/maintenance")
+        return redirect("/statistics")
     else:
         flash("Salasanan nollaus ei onnistunut.")
-        return redirect("/maintenance")
+        return redirect("/statistics")
 
 @app.route("/delete_account", methods=["POST"])
 def delete_account():
@@ -179,14 +283,43 @@ def delete_account():
 
 @app.route("/update_material", methods=["POST"])
 def update_material():
+    csrf_token = request.form["csrf_token"]
+    if not accounts.is_admin():
+        flash("Ei oikeutta tietojen päivittämiseen.")
+        return redirect("/")
     id = request.form["id"]
+    fault = False
     new_name = request.form["new_name"]
+    if len(new_name) > 140:
+        flash("Nimi on liian pitkä.")
+        fault = True
     new_author_id = request.form["new_author_id"]
     new_issued = request.form["new_issued"]
+    if int(new_issued) < 1700:
+        flash("Tarkista julkaisuvuosi. Tällainen sisältö kuuluu museoon.")
+        fault = True
+    if int(new_issued) > datetime.datetime.now().year:
+        flash("Tarkista julkaisuvuosi. Kirjastoon otetaan vain jo julkaistua sisältöä.")
+        fault = True
     new_amount = request.form["new_amount"]
+    if int(new_amount) <= 0:
+        flash("Uutta sisältöä on oltava vähintään 1 kappale.")
+        fault = True
+    if int(new_amount) > 100:
+        flash("Tämä on nyt jo liikaa...")
+        fault = True  
     new_type_id = request.form["new_type_id"]
     new_age = request.form["new_age"]
-    if librarymaterial.update_material(id, new_name, new_author_id, new_issued, new_amount, new_type_id, new_age):
+    if int(new_age) < 0:
+        flash("Ikäraja ei voi olla negatiivinen.")
+        fault = True
+    if int(new_age) > 18:
+        flash("Kaiken kirjaston materiaalin tulee olla sallittua täysi-ikäisille.")
+        fault = True
+    if fault:
+        flash("Tietojen lisääminen ei onnistunut.")
+        return redirect("/")
+    if librarymaterial.update_material(id, new_name, new_author_id, new_issued, new_amount, new_type_id, new_age, csrf_token):
         flash("Tietojen päivittäminen onnistui.")
         return redirect("/")
     else:
@@ -197,10 +330,10 @@ def update_material():
 def delete_material():
     id = request.form["id"]
     if librarymaterial.delete_material(id):
-        flash("Teoksen poistaminen onnistui.")
+        flash("Sisällön poistaminen onnistui.")
         return redirect("/")
     else:
-        flash("Teoksen poistaminen ei onnistunut.")
+        flash("Sisällön poistaminen ei onnistunut.")
         return redirect("/")
 
 @app.route("/new_loan", methods=["POST"])
@@ -226,8 +359,12 @@ def return_loan():
         flash("Palauttaminen ei onnistunut.")
         return redirect(own_page)
 
-@app.route("/maintenance")
-def maintenance():
+@app.route("/statistics")
+def statistics():
+    print("hep")
+    #if session["csrf_token"] != request.form["csrf_token"]:
+    #    abort(403)
+    print("hip")
     if not accounts.is_admin():
         flash("Ei oikeuksia ylläpitosivulle.")
         return redirect("/")
@@ -236,4 +373,4 @@ def maintenance():
     type_list = materialtypes.get_types()
     acc_list = accounts.get_accounts()
     loan_history = loans.get_loan_history()
-    return render_template("maintenance.html", auth_list=auth_list, m_list=m_list, type_list=type_list, acc_list=acc_list, loan_history=loan_history)
+    return render_template("statistics.html", auth_list=auth_list, m_list=m_list, type_list=type_list, acc_list=acc_list, loan_history=loan_history)

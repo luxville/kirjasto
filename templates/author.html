@@ -18,6 +18,7 @@
             document.getElementById('hide_edit').style.display='none'">Piilota lomake</button>
         <div id="edit_form" style="display:none">
             <form action="/edit_author" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
                 <input type="hidden" name="id" value="{{ author[0] }}">
                 <p>Sukunimi:<br>
                     <input type="text" name="new_surname" value="{{ author[1] }}"></p>
@@ -29,6 +30,7 @@
             </form>
             <hr>
             <form action="/delete_author" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
                 <input type="hidden" name="id" value="{{ author[0] }}">
                 <input type="submit" value="Poista sisällöntuottaja järjestelmästä">
             </form>

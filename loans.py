@@ -56,6 +56,11 @@ def find_loan_id(account_id, material_id):
     loan_id = result.fetchone()[0]
     return loan_id
 
+def get_count():
+    result = db.session.execute("SELECT COUNT (*) FROM loans")
+    counter = result.fetchone()[0]
+    return counter
+
 def number_of_free(material_id):
     sql = "SELECT COUNT (*) FROM loans WHERE material_id=:material_id " \
         "AND returned=False"

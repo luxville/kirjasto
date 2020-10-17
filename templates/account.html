@@ -29,6 +29,7 @@
             </div>
             <div id="update" style="display:none">
                 <form action="/update_account" method="POST">
+                    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
                     <input type="hidden" name="id" value="{{ account[0] }}">
                     <p>Nimi:<br>
                         {{ account[1] }}<br>
@@ -45,7 +46,9 @@
                     <input type="submit" value="Päivitä tiedot">
                 </form>
                 <hr>
+
                 <form action="/change_password", method="POST">
+                    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
                     <input type="hidden" name="id" value="{{ account[0] }}">
                     <p>Vanha salasana:<br>
                         <input type="password" name="old_password" required>

@@ -1,5 +1,5 @@
 from db import db
-from flask import flash
+from flask import abort, flash, session
 import accounts, authors, loans, materialtypes
 
 class Librarymaterial(db.Model):
@@ -21,9 +21,9 @@ class Librarymaterial(db.Model):
 
 
 def add_new_material(name, author_id, issued, amount, type_id, age):
-    # if not accounts.is_admin():
-    #   flash("Ei oikeuksia uuden sisällön lisäämiseen.")
-    #   return False
+    if not accounts.is_admin():
+        flash("Ei oikeuksia uuden sisällön lisäämiseen.")
+        return False
     faults = False
     if name == None or author_id == None or amount == None or type_id == None:
         flash("Anna kaikki pyydetyt tiedot.")
@@ -45,6 +45,11 @@ def add_new_material(name, author_id, issued, amount, type_id, age):
     db.session.execute(sql, {"name":name, "author_id":author_id, "issued":issued, "amount":amount, "type_id":type_id, "age":age})
     db.session.commit()
     return True
+
+def get_count():
+    result = db.session.execute("SELECT COUNT (*) FROM librarymaterial")
+    counter = result.fetchone()[0]
+    return counter
 
 def count_works(id):
     result = db.session.execute("SELECT COUNT (id), IFNULL(COUNT(id), 0), FROM " \
@@ -72,10 +77,12 @@ def get_works_by_author(id):
     works = result.fetchall()
     return works
 
-def update_material(id, new_name, new_author_id, new_issued, new_amount, new_type_id, new_age):
-    # if not accounts.is_admin():
-    #   flash("Ei oikeuksia sisällön muokkaamiseen.")
-    #   return False
+def update_material(id, new_name, new_author_id, new_issued, new_amount, new_type_id, new_age, csrf_token):
+    if session["csrf_token"] != csrf_token:
+        abort(403)
+    if not accounts.is_admin():
+        flash("Ei oikeuksia sisällön muokkaamiseen.")
+        return False
     if new_age != None:
         if int(new_age) < 0:
             flash("Anna kelvollinen ikä.")

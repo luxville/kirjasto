@@ -2,12 +2,13 @@
     {% block body %}
 
         <form action="/add_new_author" method="POST">
-        <p>Etunimi:<br>
-        <input type="text" name="first_name"></p>
-        <p>Sukunimi:<br>
-        <input type="text" name="surname"></p>
-        <p>Lyhyt kuvaus:<br>
-        <textarea name="description" rows="4" cols="40"></textarea></p>
-        <input type="submit" value="Lisää">
+            <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+            <p>Etunimi:<br>
+            <input type="text" name="first_name"></p>
+            <p>Sukunimi:<br>
+            <input type="text" name="surname"></p>
+            <p>Lyhyt kuvaus:<br>
+            <textarea name="description" rows="4" cols="40"></textarea></p>
+            <input type="submit" value="Lisää">
         </form>
     {% endblock %}
