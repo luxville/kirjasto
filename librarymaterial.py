@@ -23,17 +23,24 @@ class Librarymaterial(db.Model):
 def add_new_material(name, author_id, issued, amount, type_id, age):
     if not accounts.is_admin():
         return False
-    faults = False
+    fault = False
     if name == None or author_id == None or amount == None or type_id == None:
-        faults = True
-    if age != None:
-        if int(age) < 0:
-            faults = True
-        if int(age) > 18:
-            faults = True
+        fault = True
+    if issued == "":
+        issued = 2000
+        fault = True
+    if amount == "":
+        amount = 0
+        fault = True
     if int(amount) < 0:
-        faults = True
-    if faults:
+        fault = True
+    if age == "":
+        age = 0
+    if int(age) < 0:
+        fault = True
+    if int(age) > 18:
+        fault = True
+    if fault:
         return False
     sql = "INSERT INTO librarymaterial (name, author_id, issued, amount, type_id, age) " \
         "VALUES (:name, :author_id, :issued, :amount, :type_id, :age)"
@@ -102,12 +109,20 @@ def update_material(id, new_name, new_author_id, new_issued, new_amount, new_typ
         abort(403)
     if not accounts.is_admin():
         return False
-    if new_age != None:
-        if int(new_age) < 0:
-            return False
-        if int(new_age) > 18:
-            return False
+    if new_issued == "":
+        new_issued = 2000
+        return False
+    if new_amount == "":
+        new_amount = 0
+        return False
     if int(new_amount) < 0:
+        return False
+    if new_age == "":
+        age = 0
+        return False
+    if int(new_age) < 0:
+        return False
+    if int(new_age) > 18:
         return False
     try:
         material = Librarymaterial.query.get(id)

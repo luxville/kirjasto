@@ -155,6 +155,10 @@ def add_new_material():
         fault = True 
     type_id = request.form["type_id"]
     age = request.form["age"]
+    if age == "":
+        flash("Anna kelvollinen ikä.", "warning")
+        age = 0
+        fault = True
     if int(age) < 0:
         flash("Ikäraja ei voi olla negatiivinen.", "warning")
         fault = True
