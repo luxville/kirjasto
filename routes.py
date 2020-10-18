@@ -142,10 +142,10 @@ def add_new_material():
     issued = request.form["issued"]
     if issued == "":
         flash("Anna julkaisuvuosi.", "warning")
-        issued = 2000
+        issued = 1000
         fault = True
     if int(issued) < 1700:
-        flash("Tarkista julkaisuvuosi. Tällainen sisältö kuuluu museoon.", "warning")
+        flash("Tarkista julkaisuvuosi.", "warning")
         fault = True
     if int(issued) > datetime.datetime.now().year:
         flash("Tarkista julkaisuvuosi. Kirjastoon otetaan vain jo julkaistua sisältöä.", "warning")
@@ -368,7 +368,7 @@ def update_material():
     new_author_id = request.form["new_author_id"]
     new_issued = request.form["new_issued"]
     if new_issued == "":
-        new_issued = 2000
+        new_issued = 1000
         flash("Anna kelvollinen julkaisuvuosi.", "warning")
     if int(new_issued) < 1700:
         flash("Tarkista julkaisuvuosi. Tällainen sisältö kuuluu museoon.", "warning")

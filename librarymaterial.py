@@ -1,6 +1,6 @@
 from db import db
 from flask import abort, session
-import accounts, authors, loans, materialtypes
+import accounts
 
 class Librarymaterial(db.Model):
     id = db.Column(db.Integer, unique=True, nullable=False, primary_key=True)
@@ -78,7 +78,7 @@ def get_material_by_author():
 def get_material_by_type():
     sql = "SELECT l.id, l.name, m.name, m.id, a.surname, a.first_name, l.issued FROM " \
         "librarymaterial l JOIN materialtypes m ON l.type_id=m.id JOIN authors a ON " \
-        "l.author_id=a.id WHERE l.type_id=m.id ORDER BY l.name"
+        "l.author_id=a.id WHERE l.type_id=m.id ORDER BY m.name"
     result = db.session.execute(sql)
     m_list = result.fetchall()
     return m_list
@@ -110,7 +110,7 @@ def update_material(id, new_name, new_author_id, new_issued, new_amount, new_typ
     if not accounts.is_admin():
         return False
     if new_issued == "":
-        new_issued = 2000
+        new_issued = 1000
         return False
     if new_amount == "":
         new_amount = 0

@@ -1,6 +1,5 @@
 from db import db
 from flask import abort, flash, request, session
-# import authors, librarymaterial, loans, materialtypes
 from werkzeug.security import check_password_hash, generate_password_hash
 import os
 
@@ -10,14 +9,12 @@ class Accounts(db.Model):
     username = db.Column(db.String(40), unique=True, nullable=False)
     password = db.Column(db.String(256), nullable=False)
     age = db.Column(db.Integer)
-    #access = db.Column(db.String(5), nullable=False)
 
-    def __init__(self, name, username, password, age): #, access):
+    def __init__(self, name, username, password, age): 
         self.name = name
         self.username = username
         self.password = password
         self.age = age
-        #self.access = access
 
 
 def is_admin():

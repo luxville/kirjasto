@@ -1,6 +1,6 @@
 from db import db
 from flask import flash
-import accounts, authors, librarymaterial, materialtypes
+import accounts, librarymaterial
 
 class Loans(db.Model):
     id = db.Column(db.Integer, unique=True, nullable=False, primary_key=True)
