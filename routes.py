@@ -140,6 +140,10 @@ def add_new_material():
         fault = True
     author_id = request.form["author_id"]
     issued = request.form["issued"]
+    if issued == "":
+        flash("Anna julkaisuvuosi.", "warning")
+        issued = 2000
+        fault = True
     if int(issued) < 1700:
         flash("Tarkista julkaisuvuosi. Tällainen sisältö kuuluu museoon.", "warning")
         fault = True
