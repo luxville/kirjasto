@@ -272,19 +272,25 @@ def update_account():
     fault = False
     id = request.form["id"]
     new_name = request.form["name"].strip()
+    if len(new_name) == 0:
+        flash("Anna jokin nimi.", "warning")
+        fault = True
     if len(new_name) > 100:
-            flash("Liian pitkä nimi.", "warning")
-            fault = True
+        flash("Liian pitkä nimi.", "warning")
+        fault = True
     new_username = request.form["username"].strip()
+    if len(new_username) == 0:
+        flash("Liian lyhyt käyttäjätunnus", "warning")
+        fault = True
     if len(new_username) > 40:
-            flash("Liian pitkä käyttäjätunnus.", "warning")
-            fault = True
+        flash("Liian pitkä käyttäjätunnus.", "warning")
+        fault = True
     new_age = request.form["age"]
     if new_age == "":
         flash("Ikä on pakollinen tieto.", "warning")
         new_age = 0
         fault = True
-    if not 0 < int(new_age) < 130:
+    if not 0 <= int(new_age) < 130:
         flash("Anna kelvollinen ikä.", "warning")
         fault = True
     if fault:
