@@ -1,40 +1,6 @@
 {% extends "layout.html" %}
     {% block body %}
-        {% if session.username %}
-
-            <p>Kirjaston lainattavat tuotteet:<br>
-                {% for piece in m_list %}
-                    <li>
-                        <a href="/material/{{ piece[0] }}">{{ piece[1] }}</a>, {{ piece[2] }}
-                    </li>
-                {% endfor %}
-            </p>
-            <hr>
-            <p>Kirjastossa on tällä hetkellä lainattavissa yhteensä {{ counter[0] }}
-                tuotetta {{ counter[1] }} sisällöntuottajalta. Tähän mennessä lainauksia
-                on tehty {{ counter[2] }} kertaa. Voit muokata kirjailijan tai muun aineiston 
-                tuottajan tietoja tai lisätä niille lainattavia teoksia nimessä 
-                olevan linkin kautta.</p>
-
-            <hr>            
-            {% for author in a_list %}
-                <a href="/author/{{ author[0] }}">{{ author[1] }}, {{ author[2] }}</a><br>
-            {% endfor %}
-            
-            <hr>
-            <p><a href="/new_author">Lisää sisällöntuottaja</a>. Voit lisätä lainattavia
-                tuotteita kirjaston valikoimaan sisällöntuottajien kautta.</p>
-            <hr>
-
-            <p>Kirjaston materiaali koostuu seuraavantyyppisistä lainattavista
-                tuotteista:</p>
-
-            {% for type in t_list %}
-                <li>
-                    {{ type[1] }}: {{ type[2] }} kpl
-                </li>
-            {% endfor %}
-        {% else %}
+        {% if not session.username %}
             <form action="/login" method="POST">
                 <p>Käyttäjätunnus:<br>
                 <input type="text" name="username"></p>
@@ -43,6 +9,33 @@
                 <input type="submit" value="Kirjaudu">
             </form>
             <p>Jos sinulla ei vielä ole tunnuksia, voit rekisteröityä 
-                <a href="/new_account">täältä</a>.</p>
+                <a href="/new_account">täältä</a>.
+            </p>
         {% endif %}
+        <hr>
+        <p>Kirjastossa on tällä hetkellä lainattavissa yhteensä {{ counters[0] }}
+            tuotetta {{ counters[1] }} sisällöntuottajalta. Tähän mennessä edelleen
+            olemassa olevilla käyttäjätunnuksilla on tehty yhteensä {{ counters[2] }}
+            lainausta.</p>
+        <hr>            
+        <h4>Lainatuimpia kirjaston tuotteita:</h4>
+        <table>
+            {% for piece in top5 %}
+                <tr>
+                    <td><a href="/material/{{ piece[1] }}">{{ piece[2] }}</a></td>
+                </tr>
+            {% endfor %}
+        </table>
+        <hr>
+        
+        <p>Kirjaston materiaali koostuu seuraavantyyppisistä lainattavista
+            tuotteista:</p>
+        <table>
+            {% for type in t_list %}
+                <tr>
+                    <td>{{ type[1] }}: {{ type[2] }} kpl</td>
+                </tr>
+            {% endfor %}
+        </table>
+
     {% endblock %}

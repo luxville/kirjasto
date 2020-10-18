@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+    {% block body %}
+        <h4>Kirjaston sisällöntuottajat:</h4>
+        <table>
+            {% for author in a_list %}
+                <tr>
+                    <td><a href="/author/{{ author[0] }}">{{ author[1] }}, {{ author[2] }}</a></td>
+                </tr>
+            {% endfor %}
+        </table>
+
+        {% if session.access == "admin" %}
+            <hr>
+                <p><a href="/new_author">Lisää sisällöntuottaja</a>. Voit lisätä lainattavia
+                    tuotteita kirjaston valikoimaan sisällöntuottajien kautta.</p>
+            <hr>
+        {% endif %}
+    {% endblock %}

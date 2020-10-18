@@ -22,10 +22,10 @@
                         </li>
                     {% endfor %}
                 </p>
-                <button value="Muokkaa tietoja" onclick="
+                <button value="Muokkaa omia tietoja" onclick="
                     document.getElementById('info').style.display='none';
                     document.getElementById('update').style.display='block';
-                    document.getElementById('hide').style.display='block'">Muokkaa tietoja</button>
+                    document.getElementById('hide').style.display='block'">Muokkaa omia tietoja</button>
             </div>
             <div id="update" style="display:none">
                 <form action="/update_account" method="POST">
@@ -66,10 +66,29 @@
                     <input type="hidden" name="id" value="{{ account[0] }}">
                     <input type="submit" value="Poista käyttäjätunnus">
                 </form>
+                <hr>
                 <button id="hide" value="Muokkaa tietoja" onclick="
                     document.getElementById('info').style.display='block';
                     document.getElementById('update').style.display='none';
                     document.getElementById('hide').style.display='none'">Piilota lomake</button>
             </div>
+
+            <h5>Lainaushistoria:</h5>
+            <table>
+                <tr>
+                    <td>Teoksen nimi</td>
+                    <td>Tekijän nimi</td>
+                    <td>Tyyppi</td>
+                    <td>Palautettu</td>
+                </tr>
+                {% for loan in l_history %}
+                    <tr>
+                        <td>{{ loan[0] }}</td>
+                        <td>{{ loan[1] }}, {{ loan[2] }}</td>
+                        <td>{{ loan[3] }}</td>
+                        <td>{{ loan[4] }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
         {% endif %}
     {% endblock %}

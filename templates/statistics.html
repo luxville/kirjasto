@@ -1,48 +1,62 @@
 {% extends "layout.html" %}
     {% block body %}
-    <p>Kirjaston sisällöntuottajat:<br>
-        {% for author in auth_list %}
-            <li>
-                <a href="/author/{{ author[0] }}">{{ author[1] }}, {{ author[2] }}</a>
-            </li>
-        {% endfor %}
+    <h4>Kirjaston sisällöntuottajat:</h4>
+    <p>
+        <table>
+            {% for author in auth_list %}
+                <tr>
+                    <td><a href="/author/{{ author[0] }}">{{ author[1] }}, {{ author[2] }}</a></td>
+                </tr>
+            {% endfor %}
+        </table>
     </p>
     <hr>
-    <p>Kirjaston lainattavat tuotteet:<br>
-        {% for piece in m_list %}
-            <li>
-                <a href="/material/{{ piece[0] }}">{{ piece[1] }}</a>, {{ piece[2] }}
-            </li>
-        {% endfor %}
+    <h4>Kirjaston lainattavat tuotteet:</h4>
+    <p>
+        <table>
+            {% for piece in m_list %}
+                <tr>
+                    <td><a href="/material/{{ piece[0] }}">{{ piece[1] }}</a></td>
+                    <td>{{ piece[2] }}</td>
+                </tr>
+            {% endfor %}
+        </table>
     </p>
     <hr>
-    <p>Tuotteiden tyypit:<br>
+    <h4>Tuotteiden tyypit:</h4>
+    <table>
         {% for type in type_list %}
-            <li>
-                {{ type[1] }}
-            </li>
+            <tr>
+                <td>{{ type[1] }}</td>
+                
+            </tr>
         {% endfor %}
+    </table>
+
     </p>
     <hr>
-    <p>Kirjaston käyttäjätunnukset:<br>
-        {% for user in acc_list %}
-            <li>
-                <a href="/account/{{ user[0] }}">{{ user[1] }}</a>
-                <p>Käyttäjätunnus: {{ user[2] }}</p>
-                <form action="/reset_password" method="POST">
-                    <input type="hidden" name="id" value="{{ user[0] }}">
-                    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-                    <input type="hidden" name="username" value="{{ user[2] }}">
-                    <input type="submit" value="Nollaa salasana">
-                </form>
-                <p>Ikä: {{ user[3] }}</p>
-                =========================================
-                <br><br>
-            </li>
-        {% endfor %}
-    </p>
+    <h4>Kirjaston käyttäjätunnukset:</h4>
+    <p>Pääkäyttäjä voi nollata kenen tahansa peruskäyttäjän salasanan, jonka jälkeen
+        salasana on sama kuin käyttäjätunnus.</p>
+        <table>
+            {% for user in acc_list %}
+                <tr>
+                    <b><a href="/account/{{ user[0] }}">{{ user[1] }}</a></b>
+                    <p>Käyttäjätunnus: {{ user[2] }}</p>
+                    <p>Ikä: {{ user[3] }}</p>
+                    <form action="/reset_password" method="POST">
+                        <input type="hidden" name="id" value="{{ user[0] }}">
+                        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+                        <input type="hidden" name="username" value="{{ user[2] }}">
+                        <input type="submit" value="Nollaa salasana">
+                    </form>
+                    <br><br><br>
+                </tr>
+            {% endfor %}
+        </table>
     <hr>
-    <p>Lainaushistoria:<br>
+    <h4>Lainaushistoria:</h4>
+    <p>
         <table>
             <tr>
                 <td>Teoksen nimi</td>

@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+    {% block body %}
+        <h4>Kirjaston lainattavat tuotteet:</h4>
+        <p>
+            <table>
+                <tr>
+                    <td><b><a href="/material_list_by_name">Nimi </a></b></td>
+                    <td><b><a href="/material_list_by_type"> Tyyppi </a></b></td>
+                    <td><b><a href="/material_list_by_author"> Tekijä </a></b></td>
+                    <td><b><a href="/material_list_by_issued"> Julkaistu</a></b></td>
+                </tr>
+                {% for piece in m_list %}
+                    <tr>
+                        <td><a href="/material/{{ piece[0] }}">{{ piece[1] }}</a> </td>
+                        <td> {{ piece[2] }} </td>
+                        <td> {{ piece[4] }}, {{ piece[5] }} </td>
+                        <td> {{ piece[6] }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </p>
+    {% endblock %}
