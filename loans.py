@@ -17,24 +17,25 @@ class Loans(db.Model):
 def loan(account_id, material_id):
     fault = False
     if accounts.user_id() == 0:
-        flash("Ei oikeuksia lainaamiseen.")
+        flash("Ei oikeuksia lainaamiseen.", "warning")
         fault = True
     if account_id == None or material_id == None:
-        flash("Jotain meni pieleen lainauksen kanssa...")
+        flash("Jotain meni pieleen lainauksen kanssa...", "warning")
         fault = True
     a_age = accounts.get_account(account_id)[4]
     m_age = librarymaterial.get_work(material_id)[6]
     if m_age > a_age:
-        flash("Olet liian nuori tämän sisällön lainaamiseen.")
+        flash("Olet liian nuori tämän sisällön lainaamiseen.", "warning")
         fault = True
     loaned = find_loan_count(account_id, material_id)
     if loaned != 0:
-        flash("Samaa sisältöä voi olla lainassa samalla henkilöllä kerrallaan vain yksi kappale.")
+        flash("Samaa sisältöä voi olla lainassa samalla henkilöllä kerrallaan vain yksi kappale.", "warning")
         fault = True
     if number_of_free(material_id) == 0:
-        flash("Kaikki kappaleet ovat lainassa.")
+        flash("Kaikki kappaleet ovat lainassa.", "warning")
         fault = True
     if fault:
+        flash("Lainaaminen ei onnitunut", "danger")
         return False
     sql = "INSERT INTO loans (account_id, material_id, returned) VALUES (:account_id, " \
         ":material_id, False)"
@@ -70,12 +71,6 @@ def number_of_free(material_id):
     free = number_of_material - number_of_loaned
     return free
 
-"""def number_of_loans(material_id):
-    sql = "SELECT COUNT (*) FROM loans WHERE material_id=:material_id"
-    result = db.session.execute(sql, {"material_id":material_id})
-    number_of_loans = result.fetchone()[0]
-    return number_of_loans"""
-
 def get_loans(account_id):
     sql = "SELECT lo.material_id, li.name, li.type_id, m.name FROM loans lo JOIN " \
         "librarymaterial li ON lo.material_id=li.id JOIN materialtypes m ON " \
@@ -85,7 +80,6 @@ def get_loans(account_id):
     return l_list
 
 def get_loan_history():
-    #"REPLACE(REPLACE(returned, False, 'Lainassa'), True, 'Palautettu') AS returned "\
     sql = "SELECT li.name, auth.surname, auth.first_name, m.name, acc.name, lo.returned " \
         "FROM loans lo JOIN librarymaterial li ON lo.material_id=li.id JOIN materialtypes " \
         "m ON li.type_id=m.id JOIN authors auth ON li.author_id=auth.id JOIN accounts acc " \
@@ -94,9 +88,18 @@ def get_loan_history():
     loan_history = result.fetchall()
     return loan_history
 
+def get_personal_loan_history(id):
+    sql = "SELECT li.name, auth.surname, auth.first_name, m.name, lo.returned FROM loans " \
+        "lo JOIN librarymaterial li ON lo.material_id=li.id JOIN materialtypes m ON " \
+        "li.type_id=m.id JOIN authors auth ON li.author_id=auth.id JOIN accounts acc ON " \
+        "lo.account_id=acc.id WHERE lo.account_id=:id ORDER BY lo.id"
+    result = db.session.execute(sql, {"id":id})
+    personal_loan_history = result.fetchall()
+    return personal_loan_history
+
 def return_loan(account_id, material_id):
     if accounts.user_id() != int(account_id):
-        flash("Ei oikeuksia lainan palauttamiseen.")
+        flash("Ei oikeuksia lainan palauttamiseen.", "warning")
         return False
     try:
         id = find_loan_id(account_id, material_id)
@@ -112,3 +115,10 @@ def times_loaned(material_id):
     result = db.session.execute(sql, {"material_id":material_id})
     times_loaned = result.fetchone()
     return times_loaned
+
+def most_loaned():
+    sql = "SELECT COUNT(lo.material_id) n, li.id, li.name FROM loans lo JOIN librarymaterial " \
+        "li ON lo.material_id=li.id GROUP BY li.id ORDER BY n DESC, li.name LIMIT 5"
+    result = db.session.execute(sql)
+    top5 = result.fetchall()
+    return top5

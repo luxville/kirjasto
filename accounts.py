@@ -20,12 +20,6 @@ class Accounts(db.Model):
         #self.access = access
 
 
-def logged_in():
-    if user_id() > 0:
-        return True
-    flash("Toiminnon käyttäminen vaatii kirjautumisen.")
-    return False
-
 def is_admin():
     sql = "SELECT access FROM accounts WHERE id=:user"
     result = db.session.execute(sql, {"user":user_id()})
@@ -35,11 +29,11 @@ def is_admin():
     return False
 
 def login(username, password):
-    sql = "SELECT id, password, name FROM accounts WHERE username=:username"
+    sql = "SELECT id, password, name, access FROM accounts WHERE username=:username"
     result = db.session.execute(sql, {"username":username})
     user = result.fetchone()
     if user == None:
-        flash("Käyttäjätunnusta ei löydy. Tarkista käyttäjätunnus tai rekisteröidy.")
+        flash("Käyttäjätunnusta ei löydy. Tarkista käyttäjätunnus tai rekisteröidy.", "warning")
         return False
     else:
         hash_value = user[1]
@@ -47,22 +41,22 @@ def login(username, password):
             session["username"] = user[2]
             session["user_id"] = user[0]
             session["csrf_token"] = os.urandom(16).hex()
+            session["access"] = user[3]
             return True
         else:
-            flash("Salasana ja käyttäjätunnus eivät täsmää. Tarkista tiedot.")
+            flash("Salasana ja käyttäjätunnus eivät täsmää. Tarkista tiedot.", "warning")
             return False
 
 def logout():
     del session["username"]
     del session["user_id"]
     del session["csrf_token"]
+    del session["access"]
 
 def register(name, username, password, password2, age):
     if password != password2:
-        flash("Anna sama salasana kahdesti.")
         return False
     if not 0 < int(age) < 130:
-        flash("Anna kelvollinen ikä.")
         return False
     try:
         hash_value = generate_password_hash(password)
@@ -94,8 +88,7 @@ def update(id, new_name, new_username, new_age, csrf_token):
     if session["csrf_token"] != csrf_token:
         abort(403)
     id = user_id()
-    if not 0 < int(new_age) < 130:
-        flash("Anna kelvollinen ikä.")
+    if not 0 <= int(new_age) < 130:
         return False
     try:
         account = Accounts.query.get(id)
@@ -105,7 +98,7 @@ def update(id, new_name, new_username, new_age, csrf_token):
         db.session.commit() 
         return True
     except:
-        flash("Jokin meni pieleen.")
+        flash("Jokin meni pieleen.", "danger")
         return False
 
 def change_password(id, old_password, password, password2, csrf_token):
@@ -113,24 +106,21 @@ def change_password(id, old_password, password, password2, csrf_token):
         abort(403)
     user = user_id()
     if user != int(id):
-        flash("Ei oikeuksia muuttaa salasanaa.")
         return False
     if password != password2:
-        flash("Anna uusi salasana kahdesti.")
         return False
     else:
         sql = "SELECT password FROM accounts WHERE id=:id"
         result = db.session.execute(sql, {"id":id})
         user = result.fetchone()
         if not check_password_hash(user[0], old_password):
-            flash("Tarkista vanha salasana.")
+            flash("Tarkista vanha salasana.", "warning")
             return False
         else:
             try:
                 account = Accounts.query.get(id)
                 account.password = generate_password_hash(password)
                 db.session.commit() 
-                flash("Salasana on nyt vaihdettu.")
                 return True
             except:
                 return False
@@ -139,20 +129,18 @@ def reset_password(id, username, csrf_token):
     if session["csrf_token"] != csrf_token:
         abort(403)
     if not is_admin():
-        flash("Ei oikeuksia salasanan vaihtoon.")
         return False
     try:
         account = Accounts.query.get(id)
         account.password = generate_password_hash(username)
         db.session.commit()
-        flash("Salasana on nyt sama kuin käyttäjätunnus.")
+        flash("Salasana on nyt sama kuin käyttäjätunnus.", "success")
         return True
     except:
         return False
 
 def delete_account(id):
     if user_id() != int(id) and not is_admin():
-        flash("Ei oikeuksia käyttäjätunnuksen poistamiseen.")
         return False
     try:
         account = Accounts.query.get(id)
@@ -165,4 +153,3 @@ def delete_account(id):
 
 def user_id():
     return session.get("user_id", 0)
-

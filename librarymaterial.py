@@ -1,5 +1,5 @@
 from db import db
-from flask import abort, flash, session
+from flask import abort, session
 import accounts, authors, loans, materialtypes
 
 class Librarymaterial(db.Model):
@@ -22,21 +22,16 @@ class Librarymaterial(db.Model):
 
 def add_new_material(name, author_id, issued, amount, type_id, age):
     if not accounts.is_admin():
-        flash("Ei oikeuksia uuden sisällön lisäämiseen.")
         return False
     faults = False
     if name == None or author_id == None or amount == None or type_id == None:
-        flash("Anna kaikki pyydetyt tiedot.")
         faults = True
     if age != None:
         if int(age) < 0:
-            flash("Anna kelvollinen ikä.")
             faults = True
         if int(age) > 18:
-            flash("Kaiken kirjaston materiaalin tulee olla sallittua täysi-ikäisille.")
             faults = True
     if int(amount) < 0:
-        flash("Aineistoa tulee olla jokin kelvollinen määrä.")
         faults = True
     if faults:
         return False
@@ -57,9 +52,34 @@ def count_works(id):
     counter = result.fetchone()[0]
     return counter
 
-def get_material():
-    sql = "SELECT l.id, l.name, m.name FROM librarymaterial l, materialtypes m WHERE " \
-        "l.type_id=m.id ORDER BY l.name"
+def get_material_by_name():
+    sql = "SELECT l.id, l.name, m.name, m.id, a.surname, a.first_name, l.issued FROM " \
+        "librarymaterial l JOIN materialtypes m ON l.type_id=m.id JOIN authors a ON " \
+        "l.author_id=a.id WHERE l.type_id=m.id ORDER BY l.name"
+    result = db.session.execute(sql)
+    m_list = result.fetchall()
+    return m_list
+
+def get_material_by_author():
+    sql = "SELECT l.id, l.name, m.name, m.id, a.surname, a.first_name, l.issued FROM " \
+        "librarymaterial l JOIN materialtypes m ON l.type_id=m.id JOIN authors a ON " \
+        "l.author_id=a.id WHERE l.type_id=m.id ORDER BY a.surname, a.first_name"
+    result = db.session.execute(sql)
+    m_list = result.fetchall()
+    return m_list
+
+def get_material_by_type():
+    sql = "SELECT l.id, l.name, m.name, m.id, a.surname, a.first_name, l.issued FROM " \
+        "librarymaterial l JOIN materialtypes m ON l.type_id=m.id JOIN authors a ON " \
+        "l.author_id=a.id WHERE l.type_id=m.id ORDER BY l.name"
+    result = db.session.execute(sql)
+    m_list = result.fetchall()
+    return m_list
+
+def get_material_by_issued():
+    sql = "SELECT l.id, l.name, m.name, m.id, a.surname, a.first_name, l.issued FROM " \
+        "librarymaterial l JOIN materialtypes m ON l.type_id=m.id JOIN authors a ON " \
+        "l.author_id=a.id WHERE l.type_id=m.id ORDER BY l.issued DESC"
     result = db.session.execute(sql)
     m_list = result.fetchall()
     return m_list
@@ -81,17 +101,13 @@ def update_material(id, new_name, new_author_id, new_issued, new_amount, new_typ
     if session["csrf_token"] != csrf_token:
         abort(403)
     if not accounts.is_admin():
-        flash("Ei oikeuksia sisällön muokkaamiseen.")
         return False
     if new_age != None:
         if int(new_age) < 0:
-            flash("Anna kelvollinen ikä.")
             return False
         if int(new_age) > 18:
-            flash("Kaiken kirjaston materiaalin tulee olla sallittua täysi-ikäisille.")
             return False
     if int(new_amount) < 0:
-        flash("Aineistoa tulee olla jokin kelvollinen määrä.")
         return False
     try:
         material = Librarymaterial.query.get(id)
@@ -107,9 +123,8 @@ def update_material(id, new_name, new_author_id, new_issued, new_amount, new_typ
         return False
 
 def delete_material(id):
-    # if not accounts.is_admin():
-    #   flash("Ei oikeuksia sisällön poistamiseen.")
-    #   return False
+    if not accounts.is_admin():
+        return False
     try:
         material = Librarymaterial.query.get(id)
         db.session.delete(material)
