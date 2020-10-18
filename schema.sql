@@ -1,6 +1,3 @@
-
-
-
 CREATE TABLE authors (
     id SERIAL PRIMARY KEY, 
     first_name TEXT, 
@@ -14,7 +11,7 @@ CREATE TABLE librarymaterial (
     author_id INTEGER REFERENCES authors,
     issued INTEGER,
     amount INTEGER NOT NULL,
-    type_id INTEGER NOT NULL,
+    type_id INTEGER REFERENCES materialtypes,
     age INTEGER
 );
 
@@ -35,7 +32,7 @@ CREATE TABLE accounts (
     name TEXT NOT NULL,
     username TEXT UNIQUE NOT NULL,
     password TEXT NOT NULL,
-    age INTEGER,
+    age INTEGER NOT NULL DEFAULT 0,
     access TEXT NOT NULL DEFAULT 'user'
 );
 
@@ -45,6 +42,3 @@ CREATE TABLE loans (
     material_id INTEGER REFERENCES librarymaterial,
     returned BOOLEAN NOT NULL DEFAULT False
 );
-
---UPDATE accounts SET username='paakayttaja', access='admin' WHERE id=1;
-
