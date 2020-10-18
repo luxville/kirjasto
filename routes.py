@@ -147,6 +147,9 @@ def add_new_material():
         flash("Tarkista julkaisuvuosi. Kirjastoon otetaan vain jo julkaistua sisältöä.", "warning")
         fault = True
     amount = request.form["amount"]
+    if amount == "":
+        amount = 0
+        flash("Anna kelvollinen lukumäärä.", "warning")
     if int(amount) <= 0:
         flash("Uutta sisältöä on oltava vähintään 1 kappale.", "warning")
         fault = True
